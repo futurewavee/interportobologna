@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Interporto Bologna AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --y:#FFD600;--yl:#FFE44D;--blk:#080808;--d1:#111;--d2:#1A1A1A;--d3:#252525;--d4:#333;
+  --wh:#F0EDE6;--gr:#777;--green:#00E676;--orange:#FF6D00;--red:#FF1744;--blue:#448AFF;
+  --tab-h:64px;--header-h:56px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--blk)}
+body{font-family:'DM Sans',sans-serif;color:var(--wh);touch-action:pan-y}
+::-webkit-scrollbar{display:none}
+
+/* ── HEADER ─────────────────── */
+.mheader{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  height:var(--header-h);
+  background:rgba(8,8,8,.97);
+  border-bottom:1px solid rgba(255,214,0,.12);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
+  backdrop-filter:blur(12px);
+}
+.mlogo{display:flex;align-items:center;gap:10px}
+.mhex{
+  width:30px;height:30px;background:var(--y);
+  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  animation:spin-slow 12s linear infinite;flex-shrink:0;
+}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+.mlogo-text{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--y);line-height:1}
+.mlogo-sub{font-size:7px;letter-spacing:3px;color:var(--gr);text-transform:uppercase}
+.mheader-right{display:flex;align-items:center;gap:8px}
+.live-pill{display:flex;align-items:center;gap:5px;background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);padding:4px 10px;font-family:'Space Mono',monospace;font-size:8px;color:var(--green)}
+.live-dot{width:5px;height:5px;background:var(--green);border-radius:50%;animation:blink 1.4s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.mclock{font-family:'Space Mono',monospace;font-size:10px;color:var(--y)}
+
+/* ── BOTTOM TAB BAR ──────────── */
+.tab-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  height:var(--tab-h);
+  background:rgba(10,10,10,.98);
+  border-top:1px solid rgba(255,214,0,.15);
+  display:flex;align-items:stretch;
+  backdrop-filter:blur(12px);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  background:none;border:none;color:var(--gr);cursor:pointer;
+  transition:color .2s;padding:0;position:relative;
+}
+.tab.active{color:var(--y)}
+.tab.active::before{
+  content:'';position:absolute;top:0;left:15%;right:15%;height:2px;background:var(--y);
+}
+.tab-icon{font-size:20px;line-height:1}
+.tab-lbl{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:1.5px;text-transform:uppercase}
+
+/* ── PAGES ───────────────────── */
+.pages{
+  position:fixed;top:var(--header-h);bottom:var(--tab-h);left:0;right:0;
+  overflow:hidden;
+}
+.page{
+  position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
+  opacity:0;pointer-events:none;transform:translateX(20px);
+  transition:opacity .3s ease,transform .3s ease;
+  -webkit-overflow-scrolling:touch;
+}
+.page.active{opacity:1;pointer-events:all;transform:translateX(0)}
+
+/* ── PAGE: DASHBOARD (HOME) ──── */
+#p-home{background:var(--blk)}
+
+/* Hero strip */
+.home-hero{
+  padding:20px 16px 0;
+  background:linear-gradient(180deg,rgba(255,214,0,.06) 0%,transparent 100%);
+  position:relative;overflow:hidden;
+}
+.home-hero-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,214,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,214,0,.04) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+.home-eyebrow{
+  font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--y);
+  border:1px solid rgba(255,214,0,.25);padding:4px 10px;display:inline-block;margin-bottom:10px;
+}
+.home-title{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:.92;color:var(--wh);position:relative;z-index:1}
+.home-title span{color:var(--y)}
+.home-sub{font-size:12px;color:var(--gr);margin:8px 0 16px;line-height:1.6;font-weight:300;max-width:320px;position:relative;z-index:1}
+
+/* Road animation strip */
+.road-strip{
+  height:44px;background:var(--d1);border-top:1px solid rgba(255,214,0,.08);
+  border-bottom:1px solid rgba(255,214,0,.08);overflow:hidden;position:relative;
+  display:flex;align-items:center;
+}
+.road-dashes{position:absolute;left:0;right:0;top:50%;height:1px;
+  background:repeating-linear-gradient(90deg,rgba(255,214,0,.25) 0,rgba(255,214,0,.25) 20px,transparent 20px,transparent 40px)}
+.truck-m{position:absolute;font-size:18px;animation:truck-m linear infinite;filter:drop-shadow(0 0 5px rgba(255,214,0,.4))}
+.t-m1{animation-duration:9s;top:10px}
+.t-m2{animation-duration:13s;animation-delay:-4s;top:16px;font-size:14px;opacity:.6}
+@keyframes truck-m{from{left:calc(100% + 50px)}to{left:-50px}}
+
+/* Train strip */
+.train-strip{
+  height:36px;background:var(--d1);border-top:1px solid rgba(68,138,255,.12);
+  overflow:hidden;position:relative;display:flex;align-items:center;
+}
+.train-rail{position:absolute;left:0;right:0;height:1.5px;background:rgba(68,138,255,.2);top:18px}
+.train-m{position:absolute;font-size:22px;top:5px;animation:train-m 10s linear infinite;filter:drop-shadow(0 0 8px rgba(68,138,255,.5))}
+@keyframes train-m{from{left:calc(100% + 60px)}to{left:-60px}}
+
+
+/* Stats scroll row */
+.stats-row{
+  display:flex;gap:0;overflow-x:auto;padding:14px 16px 14px;
+  scrollbar-width:none;
+}
+.stats-row::-webkit-scrollbar{display:none}
+.stat-chip{
+  flex-shrink:0;background:var(--d2);border:1px solid rgba(255,214,0,.1);
+  padding:12px 16px;margin-right:10px;min-width:120px;
+  position:relative;overflow:hidden;
+}
+.stat-chip::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--y)}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--y);line-height:1}
+.stat-unit{font-size:11px;color:var(--gr)}
+.stat-lbl{font-size:9px;color:var(--gr);text-transform:uppercase;letter-spacing:1.5px;font-family:'Space Mono',monospace;margin-top:4px}
+.stat-badge{font-family:'Space Mono',monospace;font-size:8px;margin-top:5px;padding:2px 6px;display:inline-block}
+.badge-up{background:rgba(0,230,118,.12);color:var(--green)}
+.badge-dn{background:rgba(255,23,68,.12);color:var(--red)}
+
+/* Section header */
+.sec-hd{padding:18px 16px 10px;display:flex;align-items:baseline;justify-content:space-between}
+.sec-hd-title{font-family:'Bebas Neue',sans-serif;font-size:22px}
+.sec-hd-more{font-family:'Space Mono',monospace;font-size:8px;color:var(--y);letter-spacing:2px}
+
+/* Alert cards */
+.alert-list{padding:0 16px 14px}
+.m-alert{
+  padding:12px 14px;margin-bottom:8px;border-radius:1px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.m-alert.hi{background:rgba(255,23,68,.08);border:1px solid rgba(255,23,68,.22)}
+.m-alert.md{background:rgba(255,109,0,.08);border:1px solid rgba(255,109,0,.22)}
+.m-alert.ok{background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.22)}
+.m-alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.m-alert-t{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.m-alert.hi .m-alert-t{color:var(--red)}
+.m-alert.md .m-alert-t{color:var(--orange)}
+.m-alert.ok .m-alert-t{color:var(--green)}
+.m-alert-b{font-size:11px;color:var(--gr);line-height:1.5;margin-top:3px}
+
+/* Chart mobile */
+.m-chart{padding:0 16px 14px}
+.chart-card{background:var(--d2);border:1px solid rgba(255,214,0,.09);padding:14px}
+.chart-card-title{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--gr);margin-bottom:14px;text-transform:uppercase}
+.m-bar-chart{display:flex;align-items:flex-end;gap:3px;height:80px}
+.m-bc-w{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+.m-bc-b{width:100%;border-radius:1px 1px 0 0;min-height:2px;transition:height 1s ease}
+.m-bc-l{font-family:'Space Mono',monospace;font-size:6px;color:var(--gr)}
+
+/* NLP feed mobile */
+.nlp-section{padding:0 16px 14px}
+.nlp-card{background:var(--d2);border:1px solid rgba(255,214,0,.09);padding:14px}
+.nlp-title{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--y);margin-bottom:10px}
+.nlp-item{padding:5px 8px;font-size:10px;color:var(--gr);margin-bottom:5px;line-height:1.4;transition:opacity .4s}
+.nlp-item:last-child{margin-bottom:0}
+
+/* ext factors */
+.ext-row{display:flex;gap:6px;overflow-x:auto;padding:0 16px 14px;scrollbar-width:none}
+.ext-row::-webkit-scrollbar{display:none}
+.ext-chip{flex-shrink:0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:6px 10px;font-family:'Space Mono',monospace;font-size:8px;color:var(--gr);white-space:nowrap}
+
+/* ── PAGE: MAPPA ─────────────── */
+#p-map{background:var(--blk)}
+.map-page-hd{padding:16px 16px 12px;display:flex;align-items:center;justify-content:space-between}
+.map-page-title{font-family:'Bebas Neue',sans-serif;font-size:24px}
+.map-filter-row{display:flex;gap:6px;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none}
+.map-filter-row::-webkit-scrollbar{display:none}
+.mfbtn{flex-shrink:0;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;padding:6px 12px;border:1px solid var(--d4);background:transparent;color:var(--gr);text-transform:uppercase}
+.mfbtn.active{border-color:var(--y);color:var(--y);background:rgba(255,214,0,.05)}
+
+.map-svg-container{
+  margin:0 16px;
+  background:var(--d2);border:1px solid rgba(255,214,0,.12);
+  position:relative;overflow:hidden;
+}
+#msvg{width:100%;height:auto;display:block}
+.map-legend-m{
+  position:absolute;bottom:8px;left:8px;
+  display:flex;gap:8px;background:rgba(8,8,8,.9);border:1px solid rgba(255,214,0,.15);
+  padding:5px 10px;
+}
+.ml-item{display:flex;align-items:center;gap:4px;font-size:7px;font-family:'Space Mono',monospace;color:var(--gr)}
+.ml-dot{width:7px;height:7px;border-radius:1px}
+
+/* Zone info drawer (slides up) */
+.zone-drawer{
+  position:fixed;bottom:var(--tab-h);left:0;right:0;z-index:250;
+  background:var(--d2);border-top:2px solid var(--y);
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  max-height:55vh;overflow-y:auto;
+  padding:16px 16px 20px;
+}
+.zone-drawer.open{transform:translateY(0)}
+.drawer-handle{width:36px;height:3px;background:var(--d4);border-radius:2px;margin:0 auto 14px}
+.drawer-close{
+  position:absolute;top:14px;right:14px;background:var(--d3);border:none;
+  color:var(--gr);font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.drawer-zone-name{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--y);margin-bottom:2px}
+.drawer-co{font-size:10px;color:var(--gr);font-family:'Space Mono',monospace;margin-bottom:14px;line-height:1.5}
+.drawer-gauge-lbl{font-size:8px;color:var(--gr);letter-spacing:2px;text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:6px}
+.drawer-gauge{height:5px;background:var(--d3)}
+.drawer-gauge-fill{height:100%;transition:width .8s ease}
+.drawer-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.ds{background:var(--d3);padding:10px 12px}
+.ds-k{font-size:9px;color:var(--gr);text-transform:uppercase;letter-spacing:1px;font-family:'Space Mono',monospace}
+.ds-v{font-family:'Space Mono',monospace;font-weight:700;font-size:14px;margin-top:3px}
+.c-gr{color:var(--green)}.c-or{color:var(--orange)}.c-rd{color:var(--red)}.c-yl{color:var(--y)}
+.drawer-ai{background:rgba(255,214,0,.07);border:1px solid rgba(255,214,0,.18);padding:12px;margin-top:10px}
+.drawer-ai-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--y);margin-bottom:6px}
+.drawer-ai-txt{font-size:11px;color:var(--wh);line-height:1.7}
+
+/* ── PAGE: AZIENDE ───────────── */
+#p-companies{background:var(--blk)}
+.co-hd{padding:16px 16px 12px}
+.co-search{
+  margin:0 16px 14px;display:flex;align-items:center;gap:8px;
+  background:var(--d2);border:1px solid rgba(255,214,0,.15);
+  padding:10px 14px;
+}
+.co-search input{
+  background:none;border:none;outline:none;color:var(--wh);font-family:'Space Mono',monospace;font-size:11px;flex:1;
+}
+.co-search input::placeholder{color:var(--gr)}
+.co-search-icon{font-size:14px;color:var(--gr)}
+.zone-filter-row{display:flex;gap:6px;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none}
+.zone-filter-row::-webkit-scrollbar{display:none}
+.zfbtn{flex-shrink:0;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;padding:5px 10px;border:1px solid var(--d4);background:transparent;color:var(--gr);text-transform:uppercase}
+.zfbtn.active{border-color:var(--y);color:var(--y);background:rgba(255,214,0,.04)}
+.co-list{padding:0 16px 16px}
+.co-item{
+  background:var(--d2);border:1px solid rgba(255,214,0,.07);
+  padding:12px 14px;margin-bottom:6px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:border-color .2s;
+}
+.co-item:active{border-color:rgba(255,214,0,.35);background:var(--d3)}
+.co-name{font-size:13px;font-weight:500}
+.co-zone{font-family:'Space Mono',monospace;font-size:8px;color:var(--gr);margin-top:2px}
+.co-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.co-status.hi{background:var(--red);box-shadow:0 0 6px var(--red)}
+.co-status.md{background:var(--orange)}
+.co-status.lo{background:var(--green)}
+
+/* ── PAGE: SISTEMA AI ────────── */
+#p-ai{background:var(--blk)}
+.ai-hd{padding:16px 16px 14px}
+.ai-pillars{padding:0 16px 16px}
+.pillar{
+  background:var(--d2);border:1px solid rgba(255,214,0,.07);
+  padding:18px;margin-bottom:10px;position:relative;overflow:hidden;
+}
+.pillar::before{content:attr(data-n);position:absolute;top:-8px;right:12px;font-family:'Bebas Neue',sans-serif;font-size:72px;color:rgba(255,214,0,.05);line-height:1;pointer-events:none}
+.pillar-ico{font-size:22px;margin-bottom:12px}
+.pillar-title{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:8px}
+.pillar-desc{font-size:12px;color:var(--gr);line-height:1.75}
+.pillar-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px}
+.ptag{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:1px;padding:3px 7px;border:1px solid rgba(255,214,0,.18);color:var(--y);text-transform:uppercase}
+
+/* ROI mobile */
+.roi-section{padding:0 16px 16px}
+.roi-card-m{border-top:3px solid var(--y);padding-top:16px;margin-bottom:16px}
+.roi-num-m{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--y);line-height:1}
+.roi-lbl-m{font-size:16px;font-weight:700;margin:6px 0 6px}
+.roi-desc-m{font-size:12px;color:var(--gr);line-height:1.75}
+
+/* Compare table */
+.compare-m{background:var(--d2);border:1px solid rgba(255,214,0,.1);margin:0 16px 16px;padding:14px}
+.compare-col-hd{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;margin-bottom:8px}
+.compare-row{font-size:11px;line-height:2;color:var(--gr)}
+.compare-row.after{color:var(--wh)}
+.compare-divider{height:1px;background:rgba(255,214,0,.15);margin:14px 0}
+
+/* ── PAGE: PREVISIONI ────────── */
+#p-predict{background:var(--blk)}
+.predict-hd{padding:16px 16px 12px}
+.predict-cards{padding:0 16px 14px}
+.predict-card{
+  background:var(--d2);border:1px solid rgba(255,214,0,.09);
+  padding:14px;margin-bottom:10px;
+}
+.pc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.pc-zone{font-family:'Bebas Neue',sans-serif;font-size:18px}
+.pc-badge{font-family:'Space Mono',monospace;font-size:8px;padding:3px 8px}
+.pc-badge.hi{background:rgba(255,23,68,.15);color:var(--red)}
+.pc-badge.md{background:rgba(255,109,0,.15);color:var(--orange)}
+.pc-badge.lo{background:rgba(0,230,118,.15);color:var(--green)}
+.pc-co{font-size:10px;color:var(--gr);margin-bottom:10px}
+.pc-bar-wrap{height:4px;background:var(--d3);margin-bottom:6px}
+.pc-bar{height:100%;transition:width 1s ease}
+.pc-stats{display:flex;gap:0;font-family:'Space Mono',monospace;font-size:9px;color:var(--gr)}
+.pc-stat{flex:1;padding:6px 8px;background:var(--d3)}
+.pc-stat:not(:last-child){border-right:1px solid var(--d4)}
+.pc-stat-v{font-size:12px;font-weight:700;color:var(--wh);margin-bottom:2px}
+.pc-ai{font-size:10px;color:var(--y);margin-top:8px;padding:6px 8px;background:rgba(255,214,0,.05);border-left:2px solid var(--y)}
+
+/* TIME FORECAST CHART */
+.forecast-chart-card{background:var(--d2);border:1px solid rgba(255,214,0,.09);margin:0 16px;padding:14px;margin-bottom:14px}
+
+/* ── GENERAL UTILITIES ───────── */
+.page-pad{padding:0 16px 16px}
+.sec-divider{height:1px;background:rgba(255,255,255,.05);margin:0 16px 14px}
+.yellow{color:var(--y)}
+.scroll-end-pad{height:20px}
+
+/* Touch ripple */
+.touch-zone{position:relative;overflow:hidden}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="mheader">
+  <div class="mlogo">
+    <div class="mhex"></div>
+    <div>
+      <div class="mlogo-text">INTERPORTO BO</div>
+      <div class="mlogo-sub">AI Traffic Intelligence</div>
+    </div>
+  </div>
+  <div class="mheader-right">
+    <div class="live-pill"><span class="live-dot"></span>LIVE</div>
+    <div class="mclock" id="clk">--:--</div>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div class="pages">
+
+  <!-- ══ PAGE HOME / DASHBOARD ══ -->
+  <div class="page active" id="p-home">
+    <div class="home-hero">
+      <div class="home-hero-grid"></div>
+      <div class="home-eyebrow">◆ SISTEMA AI PREDITTIVO 2025</div>
+      <h1 class="home-title">INTELLIGENZA<br><span>LOGISTICA</span><br>LIVE</h1>
+      <p class="home-sub">130+ aziende, 3 terminal ferroviari, previsioni 24–72h in un ecosistema AI.</p>
+    </div>
+
+    <!-- Truck animation -->
+    <div class="road-strip">
+      <div class="road-dashes"></div>
+      <div class="truck-m t-m1">🚚</div>
+      <div class="truck-m t-m2">🚛</div>
+    </div>
+
+    <!-- KPI Stats row -->
+    <div class="stats-row">
+      <div class="stat-chip">
+        <div class="stat-num counter" data-target="487"><span>0</span></div>
+        <div class="stat-unit"> veh</div>
+        <div class="stat-lbl">Veicoli Oggi</div>
+        <div class="stat-badge badge-up">+12%</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-num counter" data-target="23"><span>0</span></div>
+        <div class="stat-unit"> treni</div>
+        <div class="stat-lbl">Convogli</div>
+        <div class="stat-badge badge-up">+3</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-num counter" data-target="22"><span>0</span></div>
+        <div class="stat-unit"> min</div>
+        <div class="stat-lbl">Attesa Media</div>
+        <div class="stat-badge badge-dn">−28%</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-num counter" data-target="340"><span>0</span></div>
+        <div class="stat-unit"> kg</div>
+        <div class="stat-lbl">CO₂ Risparm.</div>
+        <div class="stat-badge badge-up">ESG ↑</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-num counter" data-target="130"><span>0</span></div>
+        <div class="stat-unit">+</div>
+        <div class="stat-lbl">Aziende AI</div>
+        <div class="stat-badge badge-up">SaaS</div>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="sec-hd">
+      <div class="sec-hd-title">ALLERTE LIVE</div>
+      <div class="sec-hd-more">VEDI MAPPA →</div>
+    </div>
+    <div class="alert-list">
+      <div class="m-alert hi">
+        <div class="m-alert-icon">⚠️</div>
+        <div><div class="m-alert-t">ZONA 9 — 97% SATURO</div><div class="m-alert-b">TNT + FedEx arrivi simultanei. AI: slot +2h per 14 vettori.</div></div>
+      </div>
+      <div class="m-alert hi">
+        <div class="m-alert-icon">🔴</div>
+        <div><div class="m-alert-t">GATE A — CONGESTIONE</div><div class="m-alert-b">240 camion in coda. Attivare corsia reversibile. Deviare 30% verso Gate B.</div></div>
+      </div>
+      <div class="m-alert md">
+        <div class="m-alert-icon">⚡</div>
+        <div><div class="m-alert-t">AREA EST — ATTENZIONE</div><div class="m-alert-b">Treno DB Cargo in avvicinamento. Picco previsto +45 min.</div></div>
+      </div>
+      <div class="m-alert ok">
+        <div class="m-alert-icon">✅</div>
+        <div><div class="m-alert-t">TERMINAL NORD OK</div><div class="m-alert-b">Binario 2 libero. Prossimo convoglio 14:32. Tutto nei limiti.</div></div>
+      </div>
+    </div>
+
+    <div class="sec-divider"></div>
+
+    <!-- Chart -->
+    <div class="sec-hd"><div class="sec-hd-title">PREVISIONE 24H — ML</div></div>
+    <div class="m-chart">
+      <div class="chart-card">
+        <div class="chart-card-title">VEICOLI/ORA — TUTTI I VARCHI</div>
+        <div class="m-bar-chart" id="mChart"></div>
+      </div>
+    </div>
+
+    <!-- External factors -->
+    <div class="ext-row">
+      <div class="ext-chip">☀ METEO: Sereno</div>
+      <div class="ext-chip" style="color:var(--orange);border-color:rgba(255,109,0,.2)">⚠ A14: Rallentamenti</div>
+      <div class="ext-chip" style="color:var(--blue);border-color:rgba(68,138,255,.2)">🚂 4 Treni 14–18h</div>
+      <div class="ext-chip" style="color:var(--green);border-color:rgba(0,230,118,.15)">📅 No Festività 7gg</div>
+    </div>
+
+    <!-- Train animation -->
+    <div class="sec-divider"></div>
+    <div class="train-strip">
+      <div class="train-rail"></div>
+      <div class="train-m">🚂</div>
+    </div>
+
+    <!-- NLP Feed -->
+    <div class="sec-hd"><div class="sec-hd-title">NLP ENGINE — LIVE</div></div>
+    <div class="nlp-section">
+      <div class="nlp-card">
+        <div class="nlp-title">◆ PARSING DATI IN TEMPO REALE</div>
+        <div id="nlpFeed">
+          <div class="nlp-item" style="border-left:2px solid var(--green)"><span style="color:var(--green);font-size:8px">✓ PARSED</span> DHL: 48 ordini EDI — elaborati</div>
+          <div class="nlp-item" style="border-left:2px solid var(--y)"><span style="color:var(--y);font-size:8px">⟳ PROC.</span> Email PDF TNT: slot 14:00–18:00</div>
+          <div class="nlp-item" style="border-left:2px solid var(--blue)"><span style="color:var(--blue);font-size:8px">⟳ API</span> GXO WMS sync: 23 booking ok</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-end-pad"></div>
+  </div>
+
+  <!-- ══ PAGE MAPPA ══ -->
+  <div class="page" id="p-map">
+    <div class="map-page-hd">
+      <div>
+        <div style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--y);margin-bottom:4px">◆ MAPPA INTERATTIVA</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:26px">INTERPORTO <span style="color:var(--y)">LIVE</span></div>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--gr)">Tap zona<br>per dettagli</div>
+    </div>
+
+    <div class="map-filter-row">
+      <button class="mfbtn active" onclick="setMV('all',this)">TUTTO</button>
+      <button class="mfbtn" onclick="setMV('traffic',this)">TRAFFICO</button>
+      <button class="mfbtn" onclick="setMV('rail',this)">FERROVIA</button>
+      <button class="mfbtn" onclick="setMV('ai',this)">AI MODE</button>
+    </div>
+
+    <div class="map-svg-container" id="mapContainer">
+      <svg id="msvg" viewBox="0 0 500 700" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="g2" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,214,0,0.025)" stroke-width=".5"/>
+          </pattern>
+          <filter id="fr2"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="fg2"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="fy2"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <marker id="aY2" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#FFD600"/></marker>
+          <marker id="aB2" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#448AFF"/></marker>
+        </defs>
+        <rect width="500" height="700" fill="#111"/>
+        <rect width="500" height="700" fill="url(#g2)"/>
+        <polygon points="55,18 445,18 478,52 478,682 22,682 22,52" fill="none" stroke="rgba(255,214,0,.1)" stroke-width="1.5" stroke-dasharray="8,4"/>
+
+        <!-- RAILWAY NORD -->
+        <rect x="25" y="28" width="52" height="380" rx="2"
+          fill="rgba(68,138,255,.18)" stroke="rgba(68,138,255,.65)" stroke-width="2"
+          class="mzone" data-zone="Terminal Ferroviario Nord" data-co="Sogemar • Rail Cargo Group • Terminali Merci Bologna" data-s="lo" data-t="12" data-u="64"/>
+        <text x="51" y="190" fill="rgba(68,138,255,.7)" font-size="7" font-family="Space Mono" text-anchor="middle" transform="rotate(-90,51,190)" letter-spacing="2">TERMINAL NORD</text>
+
+        <!-- RAILWAY SUD -->
+        <rect x="25" y="430" width="52" height="240" rx="2"
+          fill="rgba(68,138,255,.18)" stroke="rgba(68,138,255,.65)" stroke-width="2"
+          class="mzone" data-zone="Terminal Ferroviario Sud" data-co="Mercitalia Rail • DB Cargo • SBB Cargo" data-s="md" data-t="8" data-u="82"/>
+        <text x="51" y="570" fill="rgba(68,138,255,.65)" font-size="7" font-family="Space Mono" text-anchor="middle" transform="rotate(-90,51,570)" letter-spacing="2">TERMINAL SUD</text>
+
+        <!-- ROADS -->
+        <rect x="198" y="18" width="22" height="664" fill="rgba(80,80,80,.18)" stroke="rgba(110,110,110,.3)" stroke-width=".8"/>
+        <rect x="77" y="148" width="346" height="16" fill="rgba(80,80,80,.18)" stroke="rgba(110,110,110,.3)" stroke-width=".8"/>
+        <rect x="77" y="336" width="346" height="16" fill="rgba(80,80,80,.18)" stroke="rgba(110,110,110,.3)" stroke-width=".8"/>
+        <rect x="77" y="500" width="346" height="16" fill="rgba(80,80,80,.18)" stroke="rgba(110,110,110,.3)" stroke-width=".8"/>
+
+        <!-- GATE NORD -->
+        <rect x="192" y="9" width="36" height="18" rx="1"
+          fill="rgba(255,214,0,.28)" stroke="#FFD600" stroke-width="1.5"
+          class="mzone" data-zone="Varco Nord — Gate A" data-co="Movyon/Aitek Sistema Controllo Accessi" data-s="hi" data-t="240" data-u="96"/>
+        <text x="210" y="21" fill="#FFD600" font-size="7" font-family="Bebas Neue" text-anchor="middle">GATE A</text>
+
+        <!-- GATE SUD -->
+        <rect x="192" y="672" width="36" height="18" rx="1"
+          fill="rgba(255,214,0,.28)" stroke="#FFD600" stroke-width="1.5"
+          class="mzone" data-zone="Varco Sud — Gate B" data-co="Movyon/Aitek Sistema Controllo Accessi" data-s="lo" data-t="72" data-u="38"/>
+        <text x="210" y="684" fill="#FFD600" font-size="7" font-family="Bebas Neue" text-anchor="middle">GATE B</text>
+
+        <!-- ZONA H CRITICO -->
+        <rect x="83" y="32" width="106" height="58" rx="2"
+          fill="rgba(255,23,68,.22)" stroke="rgba(255,23,68,.8)" stroke-width="1.5"
+          class="mzone" data-zone="Zona H — Magazzini Nord" data-co="DHL Supply Chain • Geodis • Kuehne+Nagel • Schenker" data-s="hi" data-t="52" data-u="95" filter="url(#fr2)" style="animation:pulse-hi 2s ease infinite"/>
+        <text x="136" y="55" fill="rgba(255,255,255,.9)" font-size="9" font-family="Bebas Neue" text-anchor="middle">ZONA H</text>
+        <text x="136" y="68" fill="rgba(255,23,68,.9)" font-size="6" font-family="Space Mono" text-anchor="middle">▲ CRITICO 95%</text>
+        <text x="136" y="79" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">DHL•GEODIS•K+N</text>
+
+        <!-- ZONA H3 MEDIO -->
+        <rect x="238" y="32" width="106" height="58" rx="2"
+          fill="rgba(255,109,0,.2)" stroke="rgba(255,109,0,.7)" stroke-width="1.5"
+          class="mzone" data-zone="Zona H3 — Centro Distribuzione" data-co="GXO Logistics • Savino del Bene • DB Schenker" data-s="md" data-t="33" data-u="71"/>
+        <text x="291" y="55" fill="rgba(255,255,255,.9)" font-size="9" font-family="Bebas Neue" text-anchor="middle">ZONA H3</text>
+        <text x="291" y="68" fill="rgba(255,109,0,.9)" font-size="6" font-family="Space Mono" text-anchor="middle">● MEDIO 71%</text>
+        <text x="291" y="79" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">GXO•SCHENKER</text>
+
+        <!-- AREA EST NORD CRITICO -->
+        <rect x="362" y="32" width="108" height="106" rx="2"
+          fill="rgba(255,23,68,.22)" stroke="rgba(255,23,68,.8)" stroke-width="1.5"
+          class="mzone" data-zone="Area Est — Import/Export" data-co="Marchesini Group • IMA Group • Coesia • Carpigiani" data-s="hi" data-t="49" data-u="93" filter="url(#fr2)" style="animation:pulse-hi 2s ease infinite;animation-delay:.5s"/>
+        <text x="416" y="78" fill="rgba(255,255,255,.9)" font-size="8" font-family="Bebas Neue" text-anchor="middle" transform="rotate(-90,416,78)">IMPORT/EXPORT</text>
+        <text x="416" y="62" fill="rgba(255,23,68,.8)" font-size="6" font-family="Space Mono" text-anchor="middle">▲ 93%</text>
+
+        <!-- ZONA 10 LIBERO -->
+        <rect x="83" y="168" width="106" height="58" rx="2"
+          fill="rgba(0,230,118,.18)" stroke="rgba(0,230,118,.65)" stroke-width="1.5"
+          class="mzone" data-zone="Zona 10 — E-Commerce" data-co="BRT Corriere Espresso • Amazon Logistics • MBE" data-s="lo" data-t="19" data-u="43" filter="url(#fg2)"/>
+        <text x="136" y="191" fill="rgba(255,255,255,.9)" font-size="9" font-family="Bebas Neue" text-anchor="middle">ZONA 10</text>
+        <text x="136" y="204" fill="rgba(0,230,118,.9)" font-size="6" font-family="Space Mono" text-anchor="middle">◉ LIBERO 43%</text>
+        <text x="136" y="215" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">BRT•AMAZON</text>
+
+        <!-- ZONA 9 CRITICO -->
+        <rect x="238" y="168" width="106" height="58" rx="2"
+          fill="rgba(255,23,68,.22)" stroke="rgba(255,23,68,.8)" stroke-width="1.5"
+          class="mzone" data-zone="Zona 9 — Merci Generali" data-co="TNT Italia • FedEx Express • UPS Supply Chain" data-s="hi" data-t="58" data-u="97" filter="url(#fr2)" style="animation:pulse-hi 2s ease infinite;animation-delay:1s"/>
+        <text x="291" y="191" fill="rgba(255,255,255,.9)" font-size="9" font-family="Bebas Neue" text-anchor="middle">ZONA 9</text>
+        <text x="291" y="204" fill="rgba(255,23,68,.9)" font-size="6" font-family="Space Mono" text-anchor="middle">▲ CRITICO 97%</text>
+        <text x="291" y="215" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">TNT•FEDEX•UPS</text>
+
+        <!-- AREA EST OFFICINE MEDIO -->
+        <rect x="362" y="156" width="108" height="80" rx="2"
+          fill="rgba(255,109,0,.2)" stroke="rgba(255,109,0,.7)" stroke-width="1.5"
+          class="mzone" data-zone="Area Est 2 — Officine" data-co="Officine Maccaferri • Laminazione Sottile • Saeco" data-s="md" data-t="24" data-u="67"/>
+        <text x="416" y="196" fill="rgba(255,255,255,.9)" font-size="8" font-family="Bebas Neue" text-anchor="middle" transform="rotate(-90,416,196)">OFFICINE ●</text>
+
+        <!-- AREA 7 HUB -->
+        <rect x="199" y="254" width="152" height="72" rx="2"
+          fill="rgba(255,214,0,.12)" stroke="rgba(255,214,0,.65)" stroke-width="2"
+          class="mzone" data-zone="Area 7 — Hub Direzionale" data-co="Interporto Bologna S.p.A. — Centro Direzionale" data-s="lo" data-t="11" data-u="32" filter="url(#fy2)"/>
+        <text x="275" y="281" fill="#FFD600" font-size="10" font-family="Bebas Neue" text-anchor="middle">AREA 7</text>
+        <text x="275" y="294" fill="rgba(255,214,0,.65)" font-size="6.5" font-family="Space Mono" text-anchor="middle">HUB DIREZIONALE</text>
+        <text x="275" y="307" fill="rgba(200,200,200,.4)" font-size="5.5" font-family="Space Mono" text-anchor="middle">INTERPORTO S.p.A.</text>
+
+        <!-- ZONA 8 CHIMICO MEDIO -->
+        <rect x="83" y="356" width="106" height="56" rx="2"
+          fill="rgba(255,109,0,.2)" stroke="rgba(255,109,0,.7)" stroke-width="1.5"
+          class="mzone" data-zone="Zona 8 — Chimico-Farmaceutico" data-co="Ceva Logistics • Rhenus Logistics • Unitec" data-s="md" data-t="27" data-u="70"/>
+        <text x="136" y="379" fill="rgba(255,255,255,.9)" font-size="9" font-family="Bebas Neue" text-anchor="middle">ZONA 8</text>
+        <text x="136" y="392" fill="rgba(255,109,0,.9)" font-size="6" font-family="Space Mono" text-anchor="middle">● FARMAC. 70%</text>
+        <text x="136" y="403" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">CEVA•RHENUS</text>
+
+        <!-- AREA EST FASHION LIBERO -->
+        <rect x="362" y="254" width="108" height="76" rx="2"
+          fill="rgba(0,230,118,.18)" stroke="rgba(0,230,118,.65)" stroke-width="1.5"
+          class="mzone" data-zone="Area Est 3 — Fashion & Textile" data-co="Calzedonia Group • OVS Logistics • Furla Logistics" data-s="lo" data-t="12" data-u="35"/>
+        <text x="416" y="292" fill="rgba(255,255,255,.9)" font-size="8" font-family="Bebas Neue" text-anchor="middle" transform="rotate(-90,416,292)">FASHION ◉</text>
+
+        <!-- CD1 COLD LIBERO -->
+        <rect x="199" y="436" width="122" height="52" rx="2"
+          fill="rgba(0,230,118,.18)" stroke="rgba(0,230,118,.65)" stroke-width="1.5"
+          class="mzone" data-zone="CD1 — Distribuzione Refrigerata" data-co="Frigor Logistica • Cremonini Group • Campofrio" data-s="lo" data-t="9" data-u="27" filter="url(#fg2)"/>
+        <text x="260" y="457" fill="rgba(255,255,255,.9)" font-size="9" font-family="Bebas Neue" text-anchor="middle">CD1 COLD</text>
+        <text x="260" y="470" fill="rgba(0,230,118,.8)" font-size="6" font-family="Space Mono" text-anchor="middle">FRIGOR LOG. ◉ 27%</text>
+
+        <!-- AREA EST MEDICALE MEDIO -->
+        <rect x="362" y="348" width="108" height="88" rx="2"
+          fill="rgba(255,109,0,.2)" stroke="rgba(255,109,0,.7)" stroke-width="1.5"
+          class="mzone" data-zone="Area Est 4 — Medicale" data-co="Becton Dickinson • Reckitt • Bayer Healthcare" data-s="md" data-t="21" data-u="59"/>
+        <text x="416" y="392" fill="rgba(255,255,255,.9)" font-size="8" font-family="Bebas Neue" text-anchor="middle" transform="rotate(-90,416,392)">MEDICALE ●</text>
+
+        <!-- ZONA 5 AUTOMOTIVE LIBERO -->
+        <rect x="83" y="520" width="106" height="56" rx="2"
+          fill="rgba(0,230,118,.18)" stroke="rgba(0,230,118,.65)" stroke-width="1.5"
+          class="mzone" data-zone="Zona 5 — Automotive" data-co="IVECO • Bonfiglioli Riduttori • Laminazione Sottile" data-s="lo" data-t="15" data-u="39"/>
+        <text x="136" y="543" fill="rgba(255,255,255,.9)" font-size="9" font-family="Bebas Neue" text-anchor="middle">ZONA 5</text>
+        <text x="136" y="556" fill="rgba(0,230,118,.9)" font-size="6" font-family="Space Mono" text-anchor="middle">◉ AUTO. 39%</text>
+        <text x="136" y="567" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">IVECO•BONFIGLIOLI</text>
+
+        <!-- ZONA 5-4 FOOD MEDIO -->
+        <rect x="238" y="520" width="106" height="56" rx="2"
+          fill="rgba(255,109,0,.2)" stroke="rgba(255,109,0,.7)" stroke-width="1.5"
+          class="mzone" data-zone="Zona 5-4 — Food & Beverage" data-co="Granarolo Logistica • Barilla • Surgela" data-s="md" data-t="31" data-u="76"/>
+        <text x="291" y="543" fill="rgba(255,255,255,.9)" font-size="9" font-family="Bebas Neue" text-anchor="middle">ZONA 5-4</text>
+        <text x="291" y="556" fill="rgba(255,109,0,.9)" font-size="6" font-family="Space Mono" text-anchor="middle">● FOOD 76%</text>
+        <text x="291" y="567" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">GRANAROLO•BARILLA</text>
+
+        <!-- AREA EST SPEDIZIONI LIBERO -->
+        <rect x="362" y="454" width="108" height="72" rx="2"
+          fill="rgba(0,230,118,.18)" stroke="rgba(0,230,118,.65)" stroke-width="1.5"
+          class="mzone" data-zone="Area Est 5 — Spedizionieri" data-co="Panalpina • Bolloré Logistics • SDG Group" data-s="lo" data-t="13" data-u="41"/>
+        <text x="416" y="490" fill="rgba(255,255,255,.9)" font-size="8" font-family="Bebas Neue" text-anchor="middle" transform="rotate(-90,416,490)">SPEDIZIONI ◉</text>
+
+        <!-- SUD A ECOMMERCE -->
+        <rect x="83" y="596" width="100" height="44" rx="2"
+          fill="rgba(0,230,118,.18)" stroke="rgba(0,230,118,.65)" stroke-width="1.5"
+          class="mzone" data-zone="Zona Sud A — E-Commerce" data-co="Zalando Logistics • About You • Yoox" data-s="lo" data-t="9" data-u="26"/>
+        <text x="133" y="614" fill="rgba(255,255,255,.85)" font-size="7" font-family="Bebas Neue" text-anchor="middle">SUD A</text>
+        <text x="133" y="625" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">ZALANDO</text>
+
+        <!-- SUD B SPEDIZIONI -->
+        <rect x="199" y="596" width="82" height="44" rx="2"
+          fill="rgba(255,109,0,.2)" stroke="rgba(255,109,0,.7)" stroke-width="1.5"
+          class="mzone" data-zone="Zona Sud B — Spedizionieri" data-co="Bolloré Logistics • SDG Group • Panalpina" data-s="md" data-t="18" data-u="61"/>
+        <text x="240" y="614" fill="rgba(255,255,255,.85)" font-size="7" font-family="Bebas Neue" text-anchor="middle">SUD B</text>
+        <text x="240" y="625" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">PANALPINA</text>
+
+        <!-- PARCHEGGIO -->
+        <rect x="299" y="596" width="171" height="44" rx="2"
+          fill="rgba(0,230,118,.18)" stroke="rgba(0,230,118,.65)" stroke-width="1.5"
+          class="mzone" data-zone="Parcheggio Sicuro Sud" data-co="Parcheggi Intermodali Bologna • Truck Service" data-s="lo" data-t="48" data-u="42"/>
+        <text x="384" y="614" fill="rgba(255,255,255,.85)" font-size="7" font-family="Bebas Neue" text-anchor="middle">PARCHEGGIO SICURO</text>
+        <text x="384" y="625" fill="rgba(200,200,200,.5)" font-size="5.5" font-family="Space Mono" text-anchor="middle">48 VEICOLI PRESENTI</text>
+
+        <!-- AI arrows -->
+        <line x1="77" y1="62" x2="83" y2="62" stroke="rgba(255,214,0,.4)" stroke-width="1" stroke-dasharray="3,2" marker-end="url(#aY2)"/>
+        <line x1="77" y1="290" x2="199" y2="285" stroke="rgba(68,138,255,.4)" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#aB2)"/>
+
+        <!-- Moving elements -->
+        <g style="animation:truck-v-m 8s linear infinite">
+          <text x="192" y="0" font-size="13">🚚</text>
+        </g>
+        <g style="animation:train-svg-m 10s linear infinite">
+          <rect x="-70" y="302" width="75" height="13" rx="3" fill="rgba(68,138,255,.55)" stroke="rgba(68,138,255,.9)" stroke-width="1"/>
+          <text x="-32" y="313" font-size="9" text-anchor="middle" fill="white">🚂</text>
+        </g>
+
+        <text x="250" y="693" fill="rgba(255,214,0,.2)" font-size="6" font-family="Space Mono" text-anchor="middle" letter-spacing="2">INTERPORTO BOLOGNA S.p.A.</text>
+      </svg>
+
+      <div class="map-legend-m">
+        <div class="ml-item"><div class="ml-dot" style="background:rgba(0,230,118,.8)"></div>LIBERO</div>
+        <div class="ml-item"><div class="ml-dot" style="background:rgba(255,109,0,.8)"></div>MEDIO</div>
+        <div class="ml-item"><div class="ml-dot" style="background:rgba(255,23,68,.8)"></div>CRITICO</div>
+        <div class="ml-item"><div class="ml-dot" style="background:rgba(68,138,255,.8)"></div>FERROVIA</div>
+      </div>
+    </div>
+    <div class="scroll-end-pad"></div>
+  </div>
+
+  <!-- ZONE DRAWER -->
+  <div class="zone-drawer" id="zDrawer">
+    <div class="drawer-handle"></div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <div class="drawer-zone-name" id="dzName">—</div>
+    <div class="drawer-co" id="dzCo">—</div>
+    <div class="drawer-gauge-lbl">Saturazione</div>
+    <div class="drawer-gauge"><div class="drawer-gauge-fill" id="dzGauge" style="width:0%"></div></div>
+    <div class="drawer-stats">
+      <div class="ds"><div class="ds-k">Camion</div><div class="ds-v c-rd" id="dzT">—</div></div>
+      <div class="ds"><div class="ds-k">Saturazione</div><div class="ds-v" id="dzU">—</div></div>
+      <div class="ds"><div class="ds-k">Attesa</div><div class="ds-v c-or" id="dzW">—</div></div>
+      <div class="ds"><div class="ds-k">AI +2h</div><div class="ds-v c-yl" id="dzP">—</div></div>
+    </div>
+    <div class="drawer-ai">
+      <div class="drawer-ai-lbl">◆ SUGGERIMENTO AI</div>
+      <div class="drawer-ai-txt" id="dzAI">—</div>
+    </div>
+  </div>
+
+  <!-- ══ PAGE AZIENDE ══ -->
+  <div class="page" id="p-companies">
+    <div class="co-hd">
+      <div style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--y);margin-bottom:4px">◆ AZIENDE INTEGRATE</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px">130+ <span style="color:var(--y)">AZIENDE</span></div>
+    </div>
+    <div class="co-search">
+      <span class="co-search-icon">🔍</span>
+      <input type="text" placeholder="Cerca azienda..." id="coSearch" oninput="filterCo(this.value)">
+    </div>
+    <div class="zone-filter-row" id="zoneFilterRow">
+      <button class="zfbtn active" onclick="filterZone('all',this)">TUTTE</button>
+      <button class="zfbtn" onclick="filterZone('hi',this)">CRITICHE</button>
+      <button class="zfbtn" onclick="filterZone('md',this)">MEDIE</button>
+      <button class="zfbtn" onclick="filterZone('lo',this)">LIBERE</button>
+    </div>
+    <div class="co-list" id="coList"></div>
+    <div class="scroll-end-pad"></div>
+  </div>
+
+  <!-- ══ PAGE SISTEMA AI ══ -->
+  <div class="page" id="p-ai">
+    <div class="ai-hd">
+      <div style="font-family:'Space Mono',monospace;font-size:8px;letter-spacing:3px;color:var(--y);margin-bottom:4px">◆ IL SISTEMA</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:.95">QUATTRO<br><span style="color:var(--y)">PILASTRI AI</span></div>
+    </div>
+    <div class="ai-pillars">
+      <div class="pillar" data-n="01">
+        <div class="pillar-ico">🧠</div>
+        <div class="pillar-title">NLP DATA INTEGRATION</div>
+        <p class="pillar-desc">L'AI legge e standardizza automaticamente i dati da 130+ sistemi (WMS, TMS, ERP) via API, EDI, email e PDF. Zero integrazione forzata. Data Clean Room: i dati sono anonimizzati prima dell'aggregazione, proteggendo i segreti commerciali di ogni azienda.</p>
+        <div class="pillar-tags"><span class="ptag">NLP</span><span class="ptag">EDI/API</span><span class="ptag">Data Clean Room</span></div>
+      </div>
+      <div class="pillar" data-n="02">
+        <div class="pillar-ico">📈</div>
+        <div class="pillar-title">MOTORE ML PREDITTIVO</div>
+        <p class="pillar-desc">Machine Learning che incrocia dati interni (ordini, saturazione terminal) con dati esterni: meteo, scioperi, traffico A13/A14, festività, Black Friday. Output: previsioni accurate 24–72 ore sui volumi di traffico su tutti i varchi.</p>
+        <div class="pillar-tags"><span class="ptag">Machine Learning</span><span class="ptag">72h Forecast</span><span class="ptag">Real-time</span></div>
+      </div>
+      <div class="pillar" data-n="03">
+        <div class="pillar-ico">🚦</div>
+        <div class="pillar-title">GESTIONE DINAMICA</div>
+        <p class="pillar-desc">Integrazione nativa con Movyon/Aitek: apertura automatica corsie reversibili in anticipo sui picchi. Dock Scheduling Attivo: slot orari personalizzati ai vettori per spalmare i flussi. Da "chi prima arriva" a sistema orchestrato.</p>
+        <div class="pillar-tags"><span class="ptag">Movyon/Aitek</span><span class="ptag">Dock Scheduling</span><span class="ptag">Slot AI</span></div>
+      </div>
+      <div class="pillar" data-n="04">
+        <div class="pillar-ico">💰</div>
+        <div class="pillar-title">SAAS & MONETIZZAZIONE</div>
+        <p class="pillar-desc">L'Interporto trasforma la gestione traffico da costo a ricavo. 130 aziende sottoscrivono come SaaS: dashboard predittive, slot prioritari, analytics avanzate. Revenue strutturale ricorrente per Interporto Bologna S.p.A.</p>
+        <div class="pillar-tags"><span class="ptag">SaaS</span><span class="ptag">MRR</span><span class="ptag">Priority Access</span></div>
+      </div>
+    </div>
+
+    <div class="sec-divider"></div>
+    <div style="padding:0 16px;margin-bottom:14px">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:16px">ROI & VALORE</div>
+    </div>
+    <div class="roi-section">
+      <div class="roi-card-m"><div class="roi-num-m">−25%</div><div class="roi-lbl-m">Efficienza Operativa</div><div class="roi-desc-m">Riduzione stimata congestione. Meno ore perse, turnover più rapido delle merci, minore usura infrastrutturale.</div></div>
+      <div class="roi-card-m" style="border-top-color:var(--green)"><div class="roi-num-m" style="color:var(--green)">ESG</div><div class="roi-lbl-m">Impatto Ambientale</div><div class="roi-desc-m">Eliminare code TIR con motori accesi riduce CO₂ e PM10. Metriche per fondi europei Transizione Green.</div></div>
+      <div class="roi-card-m" style="border-top-color:var(--blue)"><div class="roi-num-m" style="color:var(--blue)">SaaS</div><div class="roi-lbl-m">Nuovo Business Model</div><div class="roi-desc-m">Da costo a ricavo. 130 aziende × quota mensile = MRR strutturale. Upsell tier premium.</div></div>
+    </div>
+
+    <div class="compare-m">
+      <div class="compare-col-hd" style="color:var(--red)">◈ OGGI — SENZA AI</div>
+      <div class="compare-row">✗ Code fino a 60 min ai varchi<br>✗ 130 sistemi scollegati<br>✗ Reazione post-facto<br>✗ Gestione traffico = solo costo</div>
+      <div class="compare-divider"></div>
+      <div class="compare-col-hd" style="color:var(--green)">◉ CON AI PLATFORM</div>
+      <div class="compare-row after">✓ Previsione picchi 24–72h<br>✓ Ecosistema dati unificato<br>✓ Azioni proattive su varchi<br>✓ Traffico = ricavo SaaS</div>
+    </div>
+    <div class="scroll-end-pad"></div>
+  </div>
+
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab active" onclick="goPage('p-home',this)" id="tab-home">
+    <span class="tab-icon">📊</span>
+    <span class="tab-lbl">Dashboard</span>
+  </button>
+  <button class="tab" onclick="goPage('p-map',this)" id="tab-map">
+    <span class="tab-icon">🗺️</span>
+    <span class="tab-lbl">Mappa</span>
+  </button>
+  <button class="tab" onclick="goPage('p-companies',this)" id="tab-co">
+    <span class="tab-icon">🏭</span>
+    <span class="tab-lbl">Aziende</span>
+  </button>
+  <button class="tab" onclick="goPage('p-ai',this)" id="tab-ai">
+    <span class="tab-icon">🤖</span>
+    <span class="tab-lbl">Sistema AI</span>
+  </button>
+</div>
+
+<style>
+@keyframes pulse-hi{0%,100%{stroke-opacity:1}50%{stroke-opacity:.2}}
+@keyframes truck-v-m{from{transform:translateY(-20px)}to{transform:translateY(380px)}}
+@keyframes train-svg-m{from{transform:translateX(560px)}to{transform:translateX(-120px)}}
+</style>
+
+<script>
+// CLOCK
+function tick(){
+  const n=new Date();
+  const t=n.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('clk').textContent=t;
+}
+setInterval(tick,1000);tick();
+
+// PAGES
+function goPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  closeDrawer();
+}
+
+// COUNTER
+function runCounter(el){
+  const tgt=parseInt(el.dataset.target);
+  let c=0,step=tgt/50;
+  const t=setInterval(()=>{c=Math.min(c+step,tgt);el.querySelector('span').textContent=Math.floor(c);if(c>=tgt)clearInterval(t);},30);
+}
+setTimeout(()=>document.querySelectorAll('.counter').forEach(runCounter),400);
+
+// MAP FILTER
+function setMV(v,btn){
+  document.querySelectorAll('.mfbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const zones=document.querySelectorAll('.mzone');
+  zones.forEach(z=>{
+    if(v==='rail') z.style.opacity=z.getAttribute('data-zone')?.toLowerCase().includes('terminal')?'1':'0.15';
+    else if(v==='traffic') z.style.opacity=z.dataset.s==='hi'?'1':z.dataset.s==='md'?'0.7':'0.2';
+    else if(v==='ai') z.style.opacity=z.dataset.s==='hi'||z.dataset.zone?.includes('Hub')?'1':'0.4';
+    else z.style.opacity='1';
+  });
+}
+
+// ZONE DRAWER
+function openDrawer(z){
+  const s=z.dataset.s||'lo',t=z.dataset.t||'0',u=parseInt(z.dataset.u||0);
+  document.getElementById('dzName').textContent=z.dataset.zone||'';
+  document.getElementById('dzCo').textContent=z.dataset.co||'';
+  document.getElementById('dzT').textContent=t;
+  const uEl=document.getElementById('dzU');
+  uEl.textContent=u+'%';
+  uEl.className='ds-v '+(s==='hi'?'c-rd':s==='md'?'c-or':'c-gr');
+  document.getElementById('dzW').textContent=Math.round(u*.42)+' min';
+  document.getElementById('dzP').textContent=s==='hi'?'↓ −18%':s==='md'?'→ stabile':'↑ +8%';
+  const g=document.getElementById('dzGauge');
+  g.style.width=u+'%';
+  g.style.background=s==='hi'?'linear-gradient(90deg,#FF1744,#FF6D00)':s==='md'?'linear-gradient(90deg,#FFD600,#FF6D00)':'linear-gradient(90deg,#00E676,#00BCD4)';
+  document.getElementById('dzAI').textContent=s==='hi'?`Reindirizzare 30% traffico verso varchi alternativi. Attivare corsie reversibili. Riduz. stim. −${Math.round(u*.18)} min.`:s==='md'?`Pre-alert ai vettori: ritardare arrivi di 30 min. Congestione gestibile senza intervento urgente.`:`Zona ottimale. Capacità disponibile per riassorbire traffico da zone congestionate.`;
+  document.getElementById('zDrawer').classList.add('open');
+}
+function closeDrawer(){document.getElementById('zDrawer').classList.remove('open')}
+
+document.querySelectorAll('.mzone').forEach(z=>{
+  z.addEventListener('click',function(){openDrawer(this)});
+});
+
+// COMPANIES DATA
+const coData=[
+  {name:'DHL Supply Chain',zone:'Zona H',s:'hi'},{name:'Geodis',zone:'Zona H',s:'hi'},
+  {name:'Kuehne+Nagel',zone:'Zona H',s:'hi'},{name:'DB Schenker',zone:'Zona H3',s:'md'},
+  {name:'GXO Logistics',zone:'Zona H3',s:'md'},{name:'Savino del Bene',zone:'Zona H3',s:'md'},
+  {name:'TNT Italia',zone:'Zona 9',s:'hi'},{name:'FedEx Express',zone:'Zona 9',s:'hi'},
+  {name:'UPS Supply Chain',zone:'Zona 9',s:'hi'},{name:'BRT Corriere Espresso',zone:'Zona 10',s:'lo'},
+  {name:'Amazon Logistics',zone:'Zona 10',s:'lo'},{name:'MBE Worldwide',zone:'Zona 10',s:'lo'},
+  {name:'Marchesini Group',zone:'Area Est',s:'hi'},{name:'IMA Group',zone:'Area Est',s:'hi'},
+  {name:'Coesia Group',zone:'Area Est',s:'hi'},{name:'Carpigiani',zone:'Area Est',s:'hi'},
+  {name:'Officine Maccaferri',zone:'Area Est 2',s:'md'},{name:'Laminazione Sottile',zone:'Area Est 2',s:'md'},
+  {name:'Saeco',zone:'Area Est 2',s:'md'},{name:'Ceva Logistics',zone:'Zona 8',s:'md'},
+  {name:'Rhenus Logistics',zone:'Zona 8',s:'md'},{name:'Unitec',zone:'Zona 8',s:'md'},
+  {name:'Calzedonia Group',zone:'Area Est 3',s:'lo'},{name:'OVS Logistics',zone:'Area Est 3',s:'lo'},
+  {name:'Furla Logistics',zone:'Area Est 3',s:'lo'},{name:'Frigor Logistica',zone:'CD1',s:'lo'},
+  {name:'Cremonini Group',zone:'CD1',s:'lo'},{name:'Campofrio',zone:'CD1',s:'lo'},
+  {name:'Becton Dickinson',zone:'Area Est 4',s:'md'},{name:'Reckitt',zone:'Area Est 4',s:'md'},
+  {name:'Bayer Healthcare',zone:'Area Est 4',s:'md'},{name:'IVECO',zone:'Zona 5',s:'lo'},
+  {name:'Bonfiglioli Riduttori',zone:'Zona 5',s:'lo'},{name:'Granarolo Logistica',zone:'Zona 5-4',s:'md'},
+  {name:'Barilla',zone:'Zona 5-4',s:'md'},{name:'Surgela',zone:'Zona 5-4',s:'md'},
+  {name:'Panalpina',zone:'Area Est 5',s:'lo'},{name:'Bolloré Logistics',zone:'Area Est 5',s:'lo'},
+  {name:'SDG Group',zone:'Area Est 5',s:'lo'},{name:'Zalando Logistics',zone:'Zona Sud A',s:'lo'},
+  {name:'About You',zone:'Zona Sud A',s:'lo'},{name:'Yoox Net-A-Porter',zone:'Zona Sud A',s:'lo'},
+  {name:'Sogemar',zone:'Terminal Nord',s:'lo'},{name:'Rail Cargo Group',zone:'Terminal Nord',s:'lo'},
+  {name:'Mercitalia Rail',zone:'Terminal Sud',s:'md'},{name:'DB Cargo',zone:'Terminal Sud',s:'md'},
+  {name:'SBB Cargo',zone:'Terminal Sud',s:'md'},{name:'Interporto Bologna S.p.A.',zone:'Area 7',s:'lo'},
+  {name:'Movyon',zone:'Gate A/B',s:'hi'},{name:'Truck Service Bologna',zone:'Parcheggio',s:'lo'},
+];
+
+let currentFilter='all',currentSearch='';
+function renderCo(){
+  const list=document.getElementById('coList');
+  list.innerHTML='';
+  coData.filter(c=>{
+    const matchS=currentFilter==='all'||c.s===currentFilter;
+    const matchQ=!currentSearch||c.name.toLowerCase().includes(currentSearch.toLowerCase())||c.zone.toLowerCase().includes(currentSearch.toLowerCase());
+    return matchS&&matchQ;
+  }).forEach(c=>{
+    const d=document.createElement('div');
+    d.className='co-item';
+    d.innerHTML=`<div><div class="co-name">${c.name}</div><div class="co-zone">${c.zone}</div></div><div class="co-status ${c.s}"></div>`;
+    list.appendChild(d);
+  });
+}
+function filterZone(v,btn){currentFilter=v;document.querySelectorAll('.zfbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCo();}
+function filterCo(v){currentSearch=v;renderCo();}
+renderCo();
+
+// CHART
+const cData=[
+  {h:'00',v:20},{h:'01',v:13},{h:'02',v:9},{h:'03',v:7},{h:'04',v:11},{h:'05',v:26},
+  {h:'06',v:52},{h:'07',v:80},{h:'08',v:92},{h:'09',v:86},{h:'10',v:72},{h:'11',v:65},
+  {h:'12',v:53},{h:'13',v:60},{h:'14',v:76},{h:'15',v:89},{h:'16',v:84},{h:'17',v:70},
+  {h:'18',v:53},{h:'19',v:36},{h:'20',v:26},{h:'21',v:18},{h:'22',v:14},{h:'23',v:10}
+];
+const mc=document.getElementById('mChart');
+const nowH=new Date().getHours();
+cData.forEach((d,i)=>{
+  const w=document.createElement('div');w.className='m-bc-w';
+  const b=document.createElement('div');b.className='m-bc-b';
+  b.style.cssText='height:2px;transition:height 1s ease '+i*.03+'s';
+  const col=d.v>=80?'#FF1744':d.v>=60?'#FF6D00':d.v>=40?'#FFD600':'#00E676';
+  const lb=document.createElement('div');lb.className='m-bc-l';lb.textContent=d.h;
+  if(i===nowH){lb.style.color='#FFD600';b.style.boxShadow='0 0 8px '+col}
+  w.appendChild(b);w.appendChild(lb);mc.appendChild(w);
+  setTimeout(()=>{b.style.height=(d.v/100)*74+'px';b.style.background=i<nowH?'rgba(255,255,255,.12)':`linear-gradient(180deg,${col}cc,${col}44)`;},700+i*18);
+});
+
+// NLP FEED
+const msgs=[
+  ['✓ PARSED','var(--green)','DHL: 48 ordini EDI elaborati'],
+  ['⟳ PROC.','var(--y)','Email PDF TNT: slot 14:00–18:00'],
+  ['⟳ API','var(--blue)','GXO WMS sync: 23 booking ok'],
+  ['✓ PARSED','var(--green)','Kuehne+Nagel: volume +12% domani'],
+  ['⚠ ANOMALIA','var(--orange)','Schenker: picco non previsto'],
+  ['✓ ANON.','var(--green)','130 aziende aggregate — protette'],
+  ['⟳ ML','var(--blue)','Modello: aggiornamento in corso'],
+  ['✓ PARSED','var(--green)','FedEx: 6 arrivi extra non sched.'],
+];
+let ni=0;
+setInterval(()=>{
+  const feed=document.getElementById('nlpFeed');if(!feed)return;
+  const[tag,col,txt]=msgs[ni%msgs.length];
+  const bc=col.includes('green')?'#00E676':col.includes('blue')?'#448AFF':col.includes('orange')?'#FF6D00':'#FFD600';
+  const item=document.createElement('div');
+  item.className='nlp-item';
+  item.style.cssText=`border-left:2px solid ${bc};opacity:0;transition:opacity .4s`;
+  item.innerHTML=`<span style="color:${bc};font-size:8px">${tag}</span> ${txt}`;
+  feed.insertBefore(item,feed.firstChild);
+  setTimeout(()=>item.style.opacity='1',30);
+  if(feed.children.length>3)feed.removeChild(feed.lastChild);
+  ni++;
+},3000);
+</script>
+</body>
+</html>
