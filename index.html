@@ -262,11 +262,20 @@ tr.row-train td{background:rgba(0,180,216,.03)}
 .mc-left{display:flex;flex-direction:column;gap:12px;min-height:0}
 .mc-right{display:flex;flex-direction:column;gap:12px;min-height:0}
 
+/* ── TOUCH-ACTION: ensure buttons always receive taps ── */
+button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel,
+.zone-g, .mk, .slot, .tchip, .notif-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255,204,0,.15);
+}
+/* Prevent double-tap zoom on buttons */
+button { user-select: none; -webkit-user-select: none; }
+
 /* ── MOBILE BOTTOM NAV ── */
-.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--br);z-index:300;padding:0;safe-area-inset-bottom:env(safe-area-inset-bottom)}
-.mob-nav-inner{display:grid;grid-template-columns:repeat(6,1fr);height:56px}
-.mnb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:transparent;color:var(--txd);cursor:pointer;padding:4px 2px;transition:color .2s;font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1.1}
-.mnb .mni{font-size:16px;line-height:1}
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:2px solid var(--br);z-index:99999;padding:0;padding-bottom:env(safe-area-inset-bottom,0px);pointer-events:all;isolation:isolate;-webkit-transform:translateZ(0);transform:translateZ(0)}
+.mob-nav-inner{display:grid;grid-template-columns:repeat(6,1fr);height:58px}
+.mnb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:transparent;color:var(--txd);cursor:pointer;padding:6px 2px;transition:color .15s;font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1.1;-webkit-tap-highlight-color:rgba(255,204,0,.2);touch-action:manipulation;user-select:none;-webkit-user-select:none;min-width:0;width:100%}
+.mnb .mni{font-size:18px;line-height:1;display:block}
 .mnb.on{color:var(--y)}
 .mnb.on .mni{filter:drop-shadow(0 0 4px rgba(255,204,0,.5))}
 
@@ -285,103 +294,94 @@ tr.row-train td{background:rgba(0,180,216,.03)}
 
 /* ── RESPONSIVE MEDIA QUERIES ── */
 @media (max-width:768px){
-  /* Body: allow scroll on mobile, no overflow:hidden */
-  html,body{overflow:auto;height:auto;min-height:100vh}
-  .main{height:auto;overflow:visible;padding-bottom:72px}
-  .page{height:auto;overflow:visible;padding:10px 12px;gap:10px}
+  /* Reset overflow — critical for button taps to work */
+  html{overflow-x:hidden;overflow-y:auto;height:auto}
+  body{overflow-x:hidden;overflow-y:auto;height:auto;min-height:100vh}
+  .main{height:auto!important;overflow:visible!important;padding-bottom:80px}
+  .page{height:auto!important;overflow:visible!important;padding:10px 12px;gap:10px;min-height:0}
   .page.on{display:flex}
+  .panel{height:auto;min-height:0}
+  .pb{overflow:visible}
 
-  /* Header: compact mobile header */
+  /* Header */
   .hdr{height:50px;padding:0 12px;gap:8px}
   .logo-txt{display:none}
-  nav{display:none} /* Hidden — replaced by bottom nav */
+  nav{display:none}
   .hdr-r{gap:8px}
   .live-badge{font-size:9px}
-  .role-sel{min-width:0;width:130px;font-size:10px;padding:5px 8px}
-  .ham-btn{display:flex}
+  .role-sel{min-width:0;width:135px;font-size:10px;padding:5px 8px}
 
-  /* Bottom mobile nav */
+  /* Bottom nav */
   .mob-nav{display:block}
 
-  /* KPI grids: 2 columns on mobile */
-  .kpi4{grid-template-columns:1fr 1fr}
-  .kpi3{grid-template-columns:1fr 1fr}
+  /* KPI */
+  .kpi4,.kpi3{grid-template-columns:1fr 1fr}
   .kpi-row[style*="repeat(5"]{grid-template-columns:1fr 1fr!important}
   .kcard{padding:10px 12px}
   .kval{font-size:22px}
 
-  /* Multi-column layouts: stack to 1 col */
-  .mc-grid{grid-template-columns:1fr;flex:none}
-  .mc-left,.mc-right{min-height:0}
-  .gr.c6040,.gr.c5050,.gr{grid-template-columns:1fr!important}
-  .gr[style*="grid-template-columns:1fr 320px"]{grid-template-columns:1fr!important}
-  .gr[style*="grid-template-columns:1fr 300px"]{grid-template-columns:1fr!important}
-  .gr[style*="grid-template-columns:1fr 340px"]{grid-template-columns:1fr!important}
+  /* Stacked layouts */
+  .mc-grid{grid-template-columns:1fr!important;flex:none}
+  .mc-left,.mc-right{min-height:0;gap:10px}
+  .mc-right>.panel,.mc-left>.panel{flex:none;min-height:200px}
+  .gr,.gr.c6040,.gr.c5050{grid-template-columns:1fr!important}
+  div[style*="grid-template-columns:1fr 320px"],
+  div[style*="grid-template-columns:1fr 300px"],
+  div[style*="grid-template-columns:1fr 340px"],
+  div[style*="grid-template-columns:1fr 380px"]{grid-template-columns:1fr!important}
 
-  /* Charts: fixed height on mobile */
+  /* Charts */
   .chart-wrap{height:220px!important;min-height:220px}
 
-  /* Slot grid: 4 cols on mobile */
+  /* Slot grid */
   .slot-grid{grid-template-columns:repeat(4,1fr)}
 
-  /* Transit table: horizontal scroll */
+  /* Tables */
   .tlog-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  table.tlog{min-width:700px;font-size:10px}
+  table.tlog{min-width:680px;font-size:10px}
   table.tlog th,table.tlog td{padding:6px 7px}
-
-  /* Gate table */
   .gtbl{font-size:10px}
   .gtbl th,.gtbl td{padding:6px 7px}
 
-  /* MAP: stack vertically, side panel slides up */
-  #page-map{flex-direction:column!important;padding:0!important;height:auto!important;min-height:calc(100vh - 120px)}
-  .map-cont{height:calc(100vw * 0.6);min-height:260px;max-height:360px;flex:none}
-  .msp{display:none!important} /* desktop panel hidden, mobile panel used */
+  /* MAP */
+  #page-map{flex-direction:column!important;padding:0!important;height:auto!important}
+  .map-cont{height:55vw;min-height:240px;max-height:340px;flex:none;overflow:hidden}
+  .msp{display:none!important}
   .msp-mobile-overlay{display:block}
 
-  /* Map controls position */
+  /* Map controls & legend */
   .mc{top:8px;right:8px}
   .mbtn{width:28px;height:28px;font-size:14px}
-
-  /* Map legend: smaller */
   .mleg{padding:5px 8px;gap:8px;font-size:9px;flex-wrap:wrap}
   .ld2{width:7px;height:7px}
-
-  /* Gate tags smaller */
   .gate-tag{font-size:8px;padding:2px 6px}
   .gdot{width:5px;height:5px}
 
   /* Panels */
-  .panel{min-height:180px}
   .ph{padding:8px 12px}
   .pt{font-size:11px}
   .pb{padding:10px}
 
-  /* AI alerts */
+  /* Buttons — larger tap targets */
+  .btn-eng{padding:8px 14px;font-size:11px;min-height:38px}
+  .mbtn{min-height:28px}
+
+  /* Alerts */
   .alert{padding:10px}
   .atxt{font-size:11px}
-  .btn-eng{padding:5px 10px;font-size:10px}
 
-  /* Privacy banner */
+  /* AI right panel: natural height, no overflow clip */
+  .mc-right>.panel>.pb{overflow:visible;max-height:none}
+
+  /* Misc */
   #transit-banner-admin,#transit-banner-nexus{font-size:10px}
-
-  /* Radar page */
-  .gr[style*="grid-template-columns:1fr 320px"]{grid-template-columns:1fr!important}
-
-  /* Flex column panels: natural height */
-  .mc-right>div[style*="flex:1"]{min-height:280px}
-  .mc-right>div[style*="flex-shrink:0"]{flex-shrink:0}
-
-  /* Eco page specific */
   .plbl{font-size:11px}
   .pbr{height:6px}
 }
 
 @media (max-width:480px){
-  .kpi4{grid-template-columns:1fr 1fr}
-  .kpi3{grid-template-columns:1fr 1fr}
-  .role-sel{width:100px;font-size:9px;padding:4px 6px}
-  .live-badge span{display:none} /* hide clock time text, keep dot */
+  .kpi4,.kpi3{grid-template-columns:1fr 1fr}
+  .role-sel{width:110px;font-size:9px;padding:4px 6px}
   .notif-btn{width:28px;height:28px;font-size:12px}
   .hdr-r{gap:6px}
 }
@@ -424,14 +424,14 @@ tr.row-train td{background:rgba(0,180,216,.03)}
 </div>
 
 <!-- MOBILE BOTTOM NAV -->
-<nav class="mob-nav">
+<nav class="mob-nav" id="mobNav">
   <div class="mob-nav-inner">
-    <button class="mnb on" onclick="goPageMob('mission',this)"><span class="mni">🎛️</span>Mission</button>
-    <button class="mnb" onclick="goPageMob('gate',this)"><span class="mni">🚦</span>Gate</button>
-    <button class="mnb" onclick="goPageMob('radar',this)"><span class="mni">📡</span>Radar</button>
-    <button class="mnb" onclick="goPageMob('transit',this)"><span class="mni">🚛</span>Transit</button>
-    <button class="mnb" onclick="goPageMob('map',this)"><span class="mni">🗺️</span>Mappa</button>
-    <button class="mnb" onclick="goPageMob('eco',this)"><span class="mni">🌿</span>Eco</button>
+    <button class="mnb on" data-page="mission" onclick="goPageMob('mission',this)"><span class="mni">🎛️</span>Mission</button>
+    <button class="mnb" data-page="gate" onclick="goPageMob('gate',this)"><span class="mni">🚦</span>Gate</button>
+    <button class="mnb" data-page="radar" onclick="goPageMob('radar',this)"><span class="mni">📡</span>Radar</button>
+    <button class="mnb" data-page="transit" onclick="goPageMob('transit',this)"><span class="mni">🚛</span>Transit</button>
+    <button class="mnb" data-page="map" onclick="goPageMob('map',this)"><span class="mni">🗺️</span>Mappa</button>
+    <button class="mnb" data-page="eco" onclick="goPageMob('eco',this)"><span class="mni">🌿</span>Eco</button>
   </div>
 </nav>
 
@@ -1642,25 +1642,33 @@ function initChart(id){
 //  MOBILE NAV & PANEL FUNCTIONS
 // ═══════════════════════════════════════════════════
 function goPageMob(p, btn) {
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
-  document.querySelectorAll('.nb,.mnb').forEach(x=>x.classList.remove('on'));
-  document.getElementById('page-'+p).classList.add('on');
-  btn.classList.add('on');
-  // Sync desktop nav
-  document.querySelectorAll('.nb').forEach(b=>{
-    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+p+"'")) b.classList.add('on');
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(x => { x.classList.remove('on'); x.style.display='none'; });
+  // Show target page
+  const pg = document.getElementById('page-'+p);
+  if(pg){ pg.classList.add('on'); pg.style.display='flex'; }
+  // Update nav states
+  document.querySelectorAll('.mnb').forEach(x => x.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  document.querySelectorAll('.nb').forEach(b => {
+    b.classList.remove('on');
+    const oc = b.getAttribute('onclick')||'';
+    if(oc.includes("'"+p+"'")) b.classList.add('on');
   });
-  if(p==='radar') setTimeout(()=>initChart('chart2'),80);
-  if(p==='eco') setTimeout(()=>initChart('chart3'),80);
-  if(p==='transit') renderTransitLog();
-  if(p==='map') renderMapMarkers();
+  // Init charts if needed
+  if(p==='radar') setTimeout(()=>initChart('chart2'),100);
+  if(p==='eco') setTimeout(()=>initChart('chart3'),100);
+  if(p==='transit') { setTimeout(()=>renderTransitLog(),50); }
+  if(p==='map') { setTimeout(()=>renderMapMarkers(),50); }
   // Scroll to top
-  window.scrollTo(0,0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 }
 
-function openMobMapPanel(zone, title) {
+function openMobMapPanel(zone) {
+  const body = document.getElementById('mspBody').innerHTML;
   document.getElementById('mspMobTitle').textContent = 'Zona: ' + zone;
-  document.getElementById('mspMobBody').innerHTML = document.getElementById('mspBody').innerHTML;
+  document.getElementById('mspMobBody').innerHTML = body;
   document.getElementById('mspMobOverlay').classList.add('show');
   document.getElementById('mspMob').classList.add('show');
 }
@@ -1670,52 +1678,100 @@ function closeMobMapPanel() {
   document.getElementById('mspMob').classList.remove('show');
 }
 
-// Touch swipe to close mobile panel
+// Swipe down to close mobile panel
 let touchStartY = 0;
 document.getElementById('mspMob').addEventListener('touchstart', e=>{
   touchStartY = e.touches[0].clientY;
 }, {passive:true});
 document.getElementById('mspMob').addEventListener('touchmove', e=>{
-  const dy = e.touches[0].clientY - touchStartY;
-  if(dy > 60) closeMobMapPanel();
+  if(e.touches[0].clientY - touchStartY > 60) closeMobMapPanel();
 }, {passive:true});
 
-// Override showZonePanel to also show mobile panel
+// Override showZonePanel to also open mobile panel
 const _origShowZonePanel = showZonePanel;
 function showZonePanel(zone) {
   _origShowZonePanel(zone);
-  // On mobile, open the slide-up panel after desktop panel is filled
-  if(window.innerWidth <= 768) {
-    setTimeout(()=>openMobMapPanel(zone), 50);
-  }
+  if(window.innerWidth <= 768) setTimeout(()=>openMobMapPanel(zone), 50);
 }
 
-// Touch drag for map on mobile
-mc2.addEventListener('touchstart', e=>{
-  if(e.touches.length===1){isDrag=true;dragS={x:e.touches[0].clientX-mapTx.x,y:e.touches[0].clientY-mapTx.y};}
-}, {passive:true});
-mc2.addEventListener('touchmove', e=>{
-  if(!isDrag||e.touches.length!==1)return;
-  mapTx={x:e.touches[0].clientX-dragS.x,y:e.touches[0].clientY-dragS.y};
-  applyT();
-}, {passive:true});
-mc2.addEventListener('touchend', ()=>{isDrag=false;});
+// ── MAP TOUCH: drag only after movement threshold, never block taps ──
+let touchOrigin = null;
+let mapDragging = false;
+const DRAG_THRESHOLD = 8; // px before we consider it a drag
 
-// Pinch-to-zoom on map
-let lastDist = 0;
 mc2.addEventListener('touchstart', e=>{
-  if(e.touches.length===2){
-    lastDist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+  if(e.touches.length === 1){
+    touchOrigin = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+    mapDragging = false;
+    dragS = {x: e.touches[0].clientX - mapTx.x, y: e.touches[0].clientY - mapTx.y};
   }
 }, {passive:true});
+
 mc2.addEventListener('touchmove', e=>{
-  if(e.touches.length===2){
+  if(e.touches.length === 1 && touchOrigin){
+    const dx = e.touches[0].clientX - touchOrigin.x;
+    const dy = e.touches[0].clientY - touchOrigin.y;
+    if(!mapDragging && Math.hypot(dx,dy) > DRAG_THRESHOLD){
+      mapDragging = true;
+    }
+    if(mapDragging){
+      mapTx = {x: e.touches[0].clientX - dragS.x, y: e.touches[0].clientY - dragS.y};
+      applyT();
+    }
+  }
+  // Pinch zoom
+  if(e.touches.length === 2 && lastDist > 0){
     const dist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
-    if(lastDist>0) zMap(dist/lastDist);
+    zMap(dist / lastDist);
     lastDist = dist;
   }
 }, {passive:true});
-mc2.addEventListener('touchend', ()=>{lastDist=0;});
+
+mc2.addEventListener('touchend', ()=>{
+  touchOrigin = null;
+  mapDragging = false;
+});
+
+// Pinch-to-zoom start
+let lastDist = 0;
+mc2.addEventListener('touchstart', e=>{
+  if(e.touches.length === 2){
+    lastDist = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+  }
+}, {passive:true});
+mc2.addEventListener('touchend', ()=>{lastDist = 0;});
+
+// ── MOBILE NAV: bind with both touchend AND click for max compatibility ──
+(function() {
+  function bindMobNav() {
+    var nav = document.getElementById('mobNav');
+    if (!nav) return;
+    var btns = nav.querySelectorAll('.mnb');
+    btns.forEach(function(btn) {
+      var page = btn.getAttribute('data-page');
+      // Use touchend to avoid 300ms delay, fallback to click
+      var fired = false;
+      btn.addEventListener('touchend', function(e) {
+        e.preventDefault(); // prevent ghost click
+        e.stopPropagation();
+        fired = true;
+        goPageMob(page, btn);
+        setTimeout(function(){ fired = false; }, 500);
+      }, {passive: false});
+      btn.addEventListener('click', function(e) {
+        if (fired) return; // already handled by touchend
+        goPageMob(page, btn);
+      });
+    });
+  }
+  // Bind immediately and also after load
+  if (document.readyState !== 'loading') {
+    bindMobNav();
+  } else {
+    document.addEventListener('DOMContentLoaded', bindMobNav);
+  }
+  window.addEventListener('load', bindMobNav);
+})();
 
 window.addEventListener('load',()=>{
   // Load map image
