@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Colori base chiari per leggibilità (bianco su grigio scuro) */
   --y: #FFCC00; --yd: #C49A00;
   --bg: #1e1e1e; --bg2: #2a2a2a; --bg3: #353535; --bg4: #404040;
   --br: #444444; --br2: #555555;
@@ -18,7 +17,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;background:var(--bg);color:var(--tx);font-family:'Barlow',sans-serif;overflow:hidden; font-size: 15px;}
 
-/* ── HEADER E FISSI STRUTTURALI ── */
 .hdr{height:60px;background:var(--bg2);border-bottom:1px solid var(--br);display:flex;align-items:center;padding:0 18px;gap:16px;position:relative;z-index:9000;flex-shrink:0}
 .logo{display:flex;align-items:center;gap:10px;flex-shrink:0; position:relative; z-index:9005;}
 .logo-img-link{display:flex;align-items:center;cursor:pointer;}
@@ -40,17 +38,14 @@ nav{display:flex;gap:4px}
 .notif-btn:hover{border-color:var(--y)}
 .notif-badge{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:var(--red);border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff;border:1px solid var(--bg2)}
 
-/* FIX MOBILE ROLE SELECTOR */
 .role-wrap{position:relative; z-index: 9999; pointer-events:auto;}
 .role-sel{padding:8px 14px 8px 10px;background:var(--bg3);border:1px solid var(--br);color:var(--tx);font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;border-radius:6px;cursor:pointer;outline:none;letter-spacing:.04em;transition:all .2s;min-width:200px; position:relative; z-index:9999;}
 .role-sel:hover,.role-sel:focus{border-color:var(--y);background:var(--bg4)}
 
-/* ── MAIN ── */
 .main{height:calc(100vh - 60px);display:flex;flex-direction:column;overflow:hidden; position:relative; z-index:1;}
 .page{display:none !important;height:100%;overflow-y:auto;overflow-x:hidden;padding:16px 20px;flex-direction:column;gap:16px; position:relative;}
 .page.on{display:flex !important}
 
-/* ── KPI CARDS ── */
 .kpi-row{display:grid;gap:14px;flex-shrink:0}
 .kpi4{grid-template-columns:repeat(4,1fr)}
 .kpi3{grid-template-columns:repeat(3,1fr)}
@@ -65,17 +60,13 @@ nav{display:flex;gap:4px}
 .kbf{height:100%;border-radius:2px;transition:width 1s}
 .kbf.red{background:var(--red)}.kbf.yel{background:var(--y)}.kbf.grn{background:var(--grn)}.kbf.blu{background:var(--blu)}.kbf.ora{background:var(--ora)}
 
-/* ── PANELS ── */
 .panel{background:var(--bg2);border:1px solid var(--br);border-radius:8px;overflow:hidden;display:flex;flex-direction:column; position:relative; z-index:10;}
 .ph{padding:12px 16px;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .pt{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--y)}
 .pb{padding:16px;flex:1;overflow-y:auto; position:relative;}
-
-/* FIX: Contenitore specifico per i grafici senza barra di scorrimento */
 .pb-chart { padding:12px; overflow:hidden; display:flex; flex-direction:column; min-height:0; }
 .chart-wrap { width:100%; flex:1; min-height:0; position:relative; display:flex; align-items:center; justify-content:center; }
 
-/* ── ROLE TRANSITION OVERLAY ── */
 .role-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,0);
   pointer-events:none;z-index:999999;
@@ -103,17 +94,36 @@ table.tlog tr:hover td{background:rgba(255,255,255,.04)}
 tr.row-nexus td{background:rgba(255,204,0,.05)}
 tr.row-nexus:hover td{background:rgba(255,204,0,.08)!important}
 tr.row-nexus .tplate{color:var(--y);font-weight:700}
-tr.row-locked td{opacity:.5}
+tr.row-locked td{opacity:.55}
 tr.row-train td{background:rgba(0,180,216,.05)}
 .tplate{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;white-space:nowrap}
 .plate-clear{color:var(--tx)}
 .plate-hash{color:var(--grn);font-size:12px}
 
+/* ── PRIVACY CELL ── */
 .priv-cell{
-  display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid var(--br);border-radius:4px;padding:4px 8px;font-family:'JetBrains Mono',monospace;font-size:12px;transition:filter .4s,color .4s;
+  display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(100,100,100,.4);border-radius:4px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--txd);
 }
-.priv-cell.blur-on{filter:blur(5px);color:transparent;background:rgba(100,100,100,.15);user-select:none;pointer-events:none;}
+.priv-cell.blurred{filter:blur(6px);user-select:none;pointer-events:none;color:transparent;}
 .priv-icon{font-size:13px;flex-shrink:0}
+
+/* ── PROTECTED DATA BADGE (testo oscurato con lucchetto) ── */
+.protected-data{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(80,80,80,.2);border:1px solid rgba(120,120,120,.3);
+  border-radius:4px;padding:4px 10px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:rgba(180,180,180,.6);
+  letter-spacing:.04em;
+}
+.protected-data .lock-icon{font-size:13px;flex-shrink:0}
+.protected-data .protected-text{
+  filter:blur(5px);
+  user-select:none;
+  pointer-events:none;
+  font-size:12px;
+  color:rgba(180,180,180,.8);
+}
 
 /* STATUS PILLS */
 .pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
@@ -126,6 +136,14 @@ tr.row-train td{background:rgba(0,180,216,.05)}
 .eta-nexus{color:var(--grn);font-weight:700}
 .eta-hidden{color:transparent;filter:blur(5px);user-select:none}
 
+/* ── ADMIN HASH INFO BOX ── */
+.admin-hash-info{
+  background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);
+  border-radius:6px;padding:8px 14px;font-size:12px;color:var(--txd);
+  font-family:'JetBrains Mono',monospace;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+
 /* MAP MARKER DOTS */
 .mk{position:absolute;width:12px;height:12px;border-radius:50%;cursor:pointer;transform:translate(-50%,-50%);transition:all .4s;z-index:8}
 .mk.nexus{background:var(--y);box-shadow:0 0 0 3px rgba(255,204,0,.4)}
@@ -136,7 +154,6 @@ tr.row-train td{background:rgba(0,180,216,.05)}
 @keyframes mkpulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.4)}}
 .mk.moving{animation:mkpulse 2s infinite}
 
-/* ── MAP ── */
 #page-map{padding:0!important;flex-direction:row;overflow:hidden}
 .map-cont{flex:1;position:relative;overflow:hidden;background:#181818}
 .map-svg{position:absolute;inset:0;width:100%;height:100%}
@@ -169,7 +186,6 @@ tr.row-train td{background:rgba(0,180,216,.05)}
 .airec-ttl{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--y);margin-bottom:4px}
 .tchip{padding:6px 12px;background:rgba(255,255,255,.05);border:1px solid var(--br);border-radius:4px;font-size:13px;transition:all .15s;display:block;margin-bottom:6px}
 
-/* ── ALERTS / AI ENGINE (FIX MOBILE CLICKS) ── */
 .alert{padding:14px;border-radius:6px;border-left:4px solid;background:rgba(255,255,255,.03);margin-bottom:12px; position:relative; z-index:20;}
 .alert.crit{border-color:var(--red)}.alert.warn{border-color:var(--y)}.alert.info{border-color:var(--blu)}
 .ameta{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
@@ -178,39 +194,51 @@ tr.row-train td{background:rgba(0,180,216,.05)}
 .btn-eng{padding:10px 18px;background:var(--y);color:#000;border:none;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s; position:relative; z-index:50; pointer-events:auto; touch-action:manipulation; display:inline-block;}
 .btn-eng:hover{background:#FFD740}.btn-eng.done{background:var(--grn);color:#000}
 
-/* ── TOAST ── */
 .toast{position:fixed;bottom:80px;right:24px;background:var(--grn);color:#000;padding:12px 20px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.05em;z-index:99999;transform:translateY(60px);opacity:0;transition:all .3s}
 .toast.show{transform:translateY(0);opacity:1}
 
-/* GRID ROWS */
 .gr{display:grid;gap:16px;flex:1;min-height:0}
 .c6040{grid-template-columns:60fr 40fr}
 .c5050{grid-template-columns:1fr 1fr}
 
-/* GATE TABLE */
 .gtbl{width:100%;border-collapse:collapse;font-size:13px}
 .gtbl th{text-align:left;padding:10px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--txd);border-bottom:1px solid var(--br)}
 .gtbl td{padding:12px;border-bottom:1px solid rgba(255,255,255,.05);font-family:'JetBrains Mono',monospace;font-size:13px}
 
-/* SLOT */
 .slot-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 .slot{padding:10px 6px;border-radius:6px;border:1px solid;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;transition:all .15s}
 .slot.free{border-color:rgba(0,230,118,.4);background:rgba(0,230,118,.08);color:var(--grn)}
 .slot.busy{border-color:rgba(255,68,68,.4);background:rgba(255,68,68,.1);color:var(--red)}
 .slot.res{border-color:rgba(255,204,0,.4);background:rgba(255,204,0,.1);color:var(--y)}
 
-/* Mission control grid */
 .mc-grid{display:grid;grid-template-columns:1fr 400px;gap:16px;flex:1;min-height:0}
 .mc-left{display:flex;flex-direction:column;gap:16px;min-height:0}
 .mc-right{display:flex;flex-direction:column;gap:16px;min-height:0}
 
-/* ── TOUCH-ACTION ── */
+/* ── TABELLONE BRT PRIVACY: slot con dati oscurati ── */
+.slot-protected{
+  border-color:rgba(100,100,100,.3)!important;
+  background:rgba(60,60,60,.15)!important;
+  color:rgba(150,150,150,.5)!important;
+  cursor:not-allowed;
+}
+.slot-protected .slot-plate{filter:blur(5px);user-select:none;}
+
+/* ── WAITING TABLE BRT: righe oscurate ── */
+tr.row-protected td{
+  opacity:.45;
+}
+tr.row-protected td .prot-val{
+  filter:blur(5px);
+  user-select:none;
+  pointer-events:none;
+}
+
 button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g, .mk, .slot, .tchip, .notif-btn {
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(255,204,0,.2);
 }
 
-/* ── MOBILE BOTTOM NAV ── */
 .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:2px solid var(--br);z-index:99999;padding:0;padding-bottom:env(safe-area-inset-bottom,0px);pointer-events:all;isolation:isolate;-webkit-transform:translateZ(0);transform:translateZ(0)}
 .mob-nav-inner{display:grid;grid-template-columns:repeat(3,1fr);height:64px}
 .mnb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:none;background:transparent;color:var(--txd);cursor:pointer;padding:8px;transition:color .15s;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1.2;width:100%}
@@ -218,7 +246,6 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
 .mnb.on{color:var(--y)}
 .mnb.on .mni{filter:drop-shadow(0 0 6px rgba(255,204,0,.6))}
 
-/* ── MOBILE MAP PANEL ── */
 .msp-mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:400;opacity:0;transition:opacity .3s}
 .msp-mobile-overlay.show{opacity:1; pointer-events:auto;}
 .msp-mobile{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:2px solid var(--y);border-radius:20px 20px 0 0;z-index:401;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);max-height:80vh;display:flex;flex-direction:column; pointer-events:auto;}
@@ -227,47 +254,34 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
 .msp-mobile-header{padding:12px 20px 16px;border-bottom:1px solid var(--br);flex-shrink:0}
 .msp-mobile-body{padding:16px 20px;overflow-y:auto;flex:1;padding-bottom:calc(env(safe-area-inset-bottom) + 16px)}
 
-/* ── RESPONSIVE MEDIA QUERIES ── */
 @media (max-width:768px){
   html{overflow-x:hidden;overflow-y:auto;height:auto}
   body{overflow-x:hidden;overflow-y:auto;height:auto;min-height:100vh}
   .main{height:auto!important;overflow:visible!important;padding-bottom:90px}
   .page{height:auto!important;overflow:visible!important;padding:12px;gap:14px;min-height:0}
-
   .hdr{height:56px;padding:0 14px;gap:10px}
   .logo-txt{display:none}
   nav{display:none}
   .hdr-r{gap:10px}
   .live-badge{font-size:10px}
   .role-sel{min-width:0;width:160px;font-size:12px;padding:6px 10px; -webkit-appearance: menulist;}
-
   .mob-nav{display:block}
   .mob-nav-inner{grid-template-columns:repeat(3,1fr)}
-
   .kpi4,.kpi3{grid-template-columns:1fr 1fr}
   .kpi-row[style*="repeat(5"]{grid-template-columns:1fr 1fr!important}
   .kcard{padding:14px}
   .kval{font-size:26px}
-
   .mc-grid{grid-template-columns:1fr!important;flex:none}
-  
-  /* Adatta griglia grafici al mobile (1 colonna) */
   .gr.c5050{grid-template-columns:1fr!important}
-  
-  /* Altezza fissa su mobile per scroll naturale della pagina */
   .chart-wrap{height:250px!important;min-height:250px;flex:none;}
   .pb-chart{display:block; overflow:visible;}
-
   .slot-grid{grid-template-columns:repeat(3,1fr)}
-
   .tlog-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   table.tlog{min-width:750px;font-size:12px}
-
   #page-map{flex-direction:column!important;padding:0!important;height:auto!important}
   .map-cont{height:60vw;min-height:280px;max-height:400px;flex:none;overflow:hidden}
   .msp{display:none!important}
   .msp-mobile-overlay{display:block}
-
   .mc{top:10px;right:10px}
   .mbtn{width:32px;height:32px;font-size:16px}
   .mleg{padding:8px 10px;gap:10px;font-size:11px}
@@ -332,6 +346,9 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
 
 <div class="main">
 
+<!-- ══════════════════════════════════════════════ -->
+<!-- PANNELLO DI CONTROLLO                          -->
+<!-- ══════════════════════════════════════════════ -->
 <div id="page-mission" class="page on">
   
   <div class="panel" style="border-left: 4px solid var(--blu);">
@@ -358,30 +375,24 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
   <div class="mc-grid">
     <div class="mc-left">
       <div class="gr c5050" style="min-height: 0; flex:1;">
-        
         <div class="panel">
           <div class="ph"><div class="pt">⚡ Previsione Traffico a 72h</div><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--txd)">MODELLO LSTM</span></div>
           <div class="pb pb-chart"><div class="chart-wrap"><canvas id="chart1"></canvas></div></div>
         </div>
-        
         <div class="panel">
           <div class="ph"><div class="pt">⏱️ Tempo Attesa Varchi (Minuti)</div><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--grn)">▼ -25% AI</span></div>
           <div class="pb pb-chart"><div class="chart-wrap"><canvas id="chart2"></canvas></div></div>
         </div>
-        
         <div class="panel">
           <div class="ph"><div class="pt">📉 Trend Risparmio CO₂ (12 Mesi)</div></div>
           <div class="pb pb-chart"><div class="chart-wrap"><canvas id="chart3"></canvas></div></div>
         </div>
-        
         <div class="panel">
           <div class="ph"><div class="pt">📦 Flussi per Classe Logistica</div><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--y)">PRIVACY BY DESIGN</span></div>
           <div class="pb pb-chart"><div class="chart-wrap"><canvas id="chart4"></canvas></div></div>
         </div>
-
       </div>
     </div>
-    
     <div class="mc-right">
       <div class="panel" style="flex:1;overflow:hidden">
         <div class="ph"><div class="pt">🤖 Motore di Risoluzione AI</div></div>
@@ -402,36 +413,34 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════ -->
+<!-- GESTIONE VARCHI E TRANSITI                     -->
+<!-- ══════════════════════════════════════════════ -->
 <div id="page-logistica" class="page">
+
+  <!-- Banner contestuale per ruolo -->
   <div id="transit-banner-admin" style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:8px;padding:12px 18px;display:flex;align-items:center;gap:14px;flex-shrink:0">
     <span style="font-size:22px">🔓</span>
     <div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--grn)">MASTER ADMIN — Accesso Globale</div>
-      <div style="font-size:13px;color:var(--txd); margin-top:4px;">Tutti i dati operativi sono visibili. Permessi globali attivi su flotte e varchi.</div>
+      <div style="font-size:13px;color:var(--txd); margin-top:4px;">Tutti i veicoli sono visibili. <strong style="color:var(--grn)">Le targhe sono sempre crittografate in hash</strong> (es. AB123CD → e3b0c44…) — anche in caso di accesso non autorizzato il dato sensibile resta protetto. I treni mostrano vettore e terminal di destinazione.</div>
     </div>
   </div>
   <div id="transit-banner-brt" style="display:none;background:rgba(255,204,0,.08);border:1px solid rgba(255,204,0,.3);border-radius:8px;padding:12px 18px;align-items:center;gap:14px;flex-shrink:0">
     <span style="font-size:22px">🔒</span>
     <div>
       <div style="font-family:Barlow Condensed,sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--y)">BRT CORRIERE ESPRESSO — Accesso Limitato (Privacy by Design)</div>
-      <div style="font-size:13px;color:var(--txd); margin-top:4px;">I dati della concorrenza sono oscurati. Visualizzazione in chiaro limitata ai veicoli autorizzati BRT.</div>
+      <div style="font-size:13px;color:var(--txd); margin-top:4px;">I dati della concorrenza sono oscurati con blur 🔒. I mezzi BRT mostrano targa, ETA e carico. I transiti ferroviari non BRT appaiono come "Transito Ferroviario Standard".</div>
     </div>
   </div>
 
+  <!-- Tabellone slot + veicoli in attesa -->
   <div class="gr c5050" style="flex-shrink:0">
     <div class="panel">
       <div class="ph"><div class="pt">📋 Tabellone Assegnazioni — Varco Nord</div><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--red); font-weight:bold;">⚠ CONGESTO</span></div>
       <div class="pb">
-        <div class="slot-grid">
-          <div class="slot busy"><div style="font-size:11px">08:00</div><div style="font-weight:700">AB724EF</div><div style="font-size:10px">BRT</div></div>
-          <div class="slot busy"><div style="font-size:11px">08:30</div><div style="font-weight:700">FE219XK</div><div style="font-size:10px">DSV SpA</div></div>
-          <div class="slot res"><div style="font-size:11px">09:00</div><div style="font-weight:700">BG431LP</div><div style="font-size:10px">BRT</div></div>
-          <div class="slot free"><div style="font-size:11px">09:30</div><div style="font-weight:700">—</div><div style="font-size:10px">LIBERO</div></div>
-          <div class="slot busy"><div style="font-size:11px">10:00</div><div style="font-weight:700">CH117ZR</div><div style="font-size:10px">Ceva</div></div>
-          <div class="slot busy"><div style="font-size:11px">10:30</div><div style="font-weight:700">MO882WS</div><div style="font-size:10px">Trans C.</div></div>
-          <div class="slot res"><div style="font-size:11px">11:00</div><div style="font-weight:700">BO345KL</div><div style="font-size:10px">Geodis</div></div>
-          <div class="slot free"><div style="font-size:11px">11:30</div><div style="font-weight:700">—</div><div style="font-size:10px">LIBERO</div></div>
-        </div>
+        <!-- Slot grid: renderizzata via JS per rispettare le regole privacy -->
+        <div class="slot-grid" id="slotGrid"></div>
       </div>
     </div>
     <div class="panel">
@@ -439,27 +448,24 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
       <div class="pb" style="padding:0">
         <table class="gtbl">
           <thead><tr><th>Targa</th><th>Azienda</th><th>Dest.</th><th>Attesa</th><th>Stato</th></tr></thead>
-          <tbody>
-            <tr><td>AB724EF</td><td>BRT Corriere</td><td>CD1</td><td style="color:var(--red); font-weight:bold;">34 min</td><td><span class="pill pill-r">CRITICO</span></td></tr>
-            <tr><td>FE219XK</td><td>DSV SpA</td><td>3.2</td><td style="color:var(--red); font-weight:bold;">29 min</td><td><span class="pill pill-r">CRITICO</span></td></tr>
-            <tr><td>BG431LP</td><td>BRT Corriere</td><td>1.2</td><td style="color:var(--y)">18 min</td><td><span class="pill pill-y">ATTESA</span></td></tr>
-            <tr><td>CH117ZR</td><td>Ceva Logistics</td><td>4.3</td><td style="color:var(--y)">14 min</td><td><span class="pill pill-y">ATTESA</span></td></tr>
-          </tbody>
+          <tbody id="waitingBody"></tbody>
         </table>
       </div>
     </div>
   </div>
 
+  <!-- Registro transiti principale -->
   <div class="panel" style="flex:1;min-height:0">
     <div class="ph">
       <div class="pt">📡 Registro Transiti — Rilevamento Veicoli</div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="ld"></div>
         <span style="font-family:JetBrains Mono,monospace;font-size:12px;color:var(--grn); font-weight:bold;">LIVE · <span id="logTime">--:--:--</span></span>
+        <!-- Badge crittografia: le targhe sono SEMPRE hashate per tutti i ruoli -->
         <div id="hash-toggle-wrap">
-          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--txd)">
-            <input type="checkbox" id="hashToggle" onchange="renderTransitLog()" style="accent-color:var(--y); width:16px; height:16px;"> Hash Targhe
-          </label>
+          <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);border-radius:4px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--grn);">
+            🔐 TARGHE CRITTOGRAFATE
+          </span>
         </div>
       </div>
     </div>
@@ -485,9 +491,11 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════ -->
+<!-- MAPPA INTERATTIVA                              -->
+<!-- ══════════════════════════════════════════════ -->
 <div id="page-map" class="page">
   <div class="map-cont" id="mapCont">
-    
     <svg class="map-svg" id="mapSvg" viewBox="0 0 1400 560" preserveAspectRatio="xMidYMid meet">
       <defs>
         <style>
@@ -567,7 +575,6 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
       <g class="zone-g" data-zone="9.2"><rect class="za" x="1132" y="80" width="68" height="48" rx="4" fill="rgba(255,153,0,.2)" stroke="rgba(255,153,0,.5)" stroke-width="1.5"/><text class="zl" x="1166" y="105" font-size="10">9.2</text></g>
       <g class="zone-g" data-zone="9.3"><rect class="za" x="1132" y="140" width="68" height="46" rx="4" fill="rgba(255,204,0,.15)" stroke="rgba(255,204,0,.5)" stroke-width="1.5"/><text class="zl" x="1166" y="164" font-size="10">9.3</text></g>
       <g class="zone-g" data-zone="9.4"><rect class="za" x="1132" y="198" width="68" height="36" rx="4" fill="rgba(255,68,68,.25)" stroke="rgba(255,68,68,.6)" stroke-width="1.5"/><text class="zl" x="1166" y="218" font-size="10">9.4</text></g>
-      
       <g class="zone-g" data-zone="15.1"><rect class="za" x="1212" y="180" width="66" height="30" rx="4" fill="rgba(255,68,68,.25)" stroke="rgba(255,68,68,.6)" stroke-width="1.5"/><text class="zl" x="1245" y="195" font-size="10">15.1</text></g>
       <g class="zone-g" data-zone="15.2"><rect class="za" x="1290" y="180" width="66" height="30" rx="4" fill="rgba(255,68,68,.25)" stroke="rgba(255,68,68,.6)" stroke-width="1.5"/><text class="zl" x="1323" y="195" font-size="10">15.2</text></g>
       <g class="zone-g" data-zone="14.1.A"><rect class="za" x="1212" y="215" width="66" height="30" rx="4" fill="rgba(0,230,118,.2)" stroke="rgba(0,230,118,.5)" stroke-width="1.5"/><text class="zl" x="1245" y="230" font-size="9">14.1A</text></g>
@@ -616,9 +623,9 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
 // ═══════════════════════════════════════════════════
 //  DATA
 // ═══════════════════════════════════════════════════
-const BRT_ZONES = ['1.2']; 
+const BRT_ZONES = ['1.2'];
+
 const ZONE_DATA = {
-  // ── SETTORE OVEST ──
   "Ribalta Doganale":{tenants:["Autotrasporti Palena V. & C.","Betti Impianti Elettrici","Vanges","Ribalta Doganale"],sat:35,satColor:"grn",rec:"✅ Zona operativa. Flusso doganale regolare."},
   "Palazzina RFI":{tenants:["Bologna Gru","Con.S.A.R.","Mercitalia Intermodal"],sat:55,satColor:"ora",rec:"⚠️ Attività ferroviaria media."},
   "Logisana":{tenants:["Lapsy"],sat:22,satColor:"grn",rec:"✅ Bassa saturazione. Capacità piena disponibile."},
@@ -635,15 +642,14 @@ const ZONE_DATA = {
   "3.2":{tenants:["DSV SpA","Gruppo Laghezza"],sat:61,satColor:"yel",rec:"📊 Traffico moderato."},
   "3.3":{tenants:["Bresciafiori","InPost","PNP spa"],sat:33,satColor:"grn",rec:"✅ Zona efficiente."},
   "4.2":{tenants:["Foppiani Shipping"],sat:25,satColor:"grn",rec:"✅ Zona pronta per prossimi arrivi."},
-  "4.3":{tenants:["Ceva Logistics","Teloni Tosetto", "ecc."],sat:65,satColor:"yel",rec:"📊 Zona attiva."},
+  "4.3":{tenants:["Ceva Logistics","Teloni Tosetto","ecc."],sat:65,satColor:"yel",rec:"📊 Zona attiva."},
   "4.4":{tenants:["Arco Logistica","Geodis"],sat:58,satColor:"ora",rec:"⚠️ Traffico in aumento."},
-  "4.5":{tenants:["Rentokil", "Eurocot"],sat:44,satColor:"yel",rec:"📊 Operatività normale."},
-  // ── SETTORE EST ──
+  "4.5":{tenants:["Rentokil","Eurocot"],sat:44,satColor:"yel",rec:"📊 Operatività normale."},
   "5.1":{tenants:["Raben Italy","Univergomma"],sat:52,satColor:"ora",rec:"⚠️ Monitoraggio attivo."},
   "5.2":{tenants:["GRUBER Logistics","Stante"],sat:60,satColor:"yel",rec:"📊 Transiti internazionali previsti."},
   "5.3":{tenants:["Due Torri","Torello"],sat:35,satColor:"grn",rec:"✅ Zona efficiente."},
   "6.1":{tenants:["Mercitalia Logistics"],sat:48,satColor:"yel",rec:"📊 Attività nella norma."},
-  "6.2":{tenants:["Hellmann Worldwide", "ecc."],sat:75,satColor:"red",rec:"🔴 Gestione slot raccomandata."},
+  "6.2":{tenants:["Hellmann Worldwide","ecc."],sat:75,satColor:"red",rec:"🔴 Gestione slot raccomandata."},
   "6.3":{tenants:["Widem Logistics","Plus Scrl"],sat:42,satColor:"yel",rec:"📊 Operatività stabile."},
   "6.4":{tenants:["Storopack Italia"],sat:30,satColor:"grn",rec:"✅ Zona libera."},
   "8.0":{tenants:["Applied Medical","Gruppo CDS"],sat:80,satColor:"red",rec:"🔴 Logistica prioritaria. Fast-track attivo."},
@@ -663,19 +669,41 @@ const ZONE_DATA = {
 
 const SAT_COLORS = {red:'#FF4444',ora:'#FF9900',yel:'#FFCC00',grn:'#00E676',blu:'#00B4D8'};
 
+// ─── SLOT DATA per il tabellone Varco Nord ───
+const SLOT_DATA = [
+  {time:'08:00', plate:'AB724EF', company:'BRT', isBrt:true,  status:'busy'},
+  {time:'08:30', plate:'FE219XK', company:'DSV SpA', isBrt:false, status:'busy'},
+  {time:'09:00', plate:'BG431LP', company:'BRT', isBrt:true,  status:'res'},
+  {time:'09:30', plate:'—',       company:'LIBERO', isBrt:null, status:'free'},
+  {time:'10:00', plate:'CH117ZR', company:'Ceva', isBrt:false, status:'busy'},
+  {time:'10:30', plate:'MO882WS', company:'Trans C.', isBrt:false, status:'busy'},
+  {time:'11:00', plate:'BO345KL', company:'Geodis', isBrt:false, status:'res'},
+  {time:'11:30', plate:'—',       company:'LIBERO', isBrt:null, status:'free'},
+];
+
+// ─── WAITING LIST per tabella "Veicoli in Attesa" ───
+const WAITING_DATA = [
+  {plate:'AB724EF', company:'BRT Corriere', dest:'CD1', wait:'34 min', waitLevel:'red', status:'CRITICO', isBrt:true},
+  {plate:'FE219XK', company:'DSV SpA',      dest:'3.2', wait:'29 min', waitLevel:'red', status:'CRITICO', isBrt:false},
+  {plate:'BG431LP', company:'BRT Corriere', dest:'1.2', wait:'18 min', waitLevel:'yel', status:'ATTESA',  isBrt:true},
+  {plate:'CH117ZR', company:'Ceva Logistics',dest:'4.3', wait:'14 min', waitLevel:'yel', status:'ATTESA', isBrt:false},
+];
+
 // ─── TRANSIT LOG DATA ───
 const TRANSIT_DATA = [
-  {id:'BRT-001',plate:'AB724EF',type:'truck',isBrt:true,company:'BRT Corriere Espresso',dest:'CD1 — Bay 3',cargo:'Pacchi Express (1.4t)',eta:'08:12',etaMins:4,speed:'38 km/h',status:'arriving',lat:48,lng:22},
-  {id:'BRT-002',plate:'AB388QR',type:'truck',isBrt:true,company:'BRT Corriere Espresso',dest:'1.2 — Bay 1',cargo:'Smistamento (0.8t)',eta:'08:34',etaMins:26,speed:'67 km/h',status:'enroute',lat:30,lng:35},
-  {id:'BRT-003',plate:'BO217KX',type:'truck',isBrt:true,company:'BRT Corriere Espresso',dest:'4.4 — Bay A',cargo:'Merce Varia (2.1t)',eta:'09:05',etaMins:57,speed:'72 km/h',status:'enroute',lat:62,lng:28},
-  {id:'BRT-004',plate:'BO991LZ',type:'truck',isBrt:true,company:'BRT Corriere Espresso',dest:'1.2 — Bay 2',cargo:'Giacenze (0.6t)',eta:'10:15',etaMins:127,speed:'81 km/h',status:'scheduled',lat:20,lng:55},
-  {id:'BRT-005',plate:'MO114WP',type:'van',isBrt:true,company:'BRT Corriere Espresso',dest:'1.2 — Bay 4',cargo:'Espresso Urgente (0.2t)',eta:'08:48',etaMins:40,speed:'54 km/h',status:'enroute',lat:75,lng:18},
-  {id:'OT-001',plate:'FE219XK',type:'truck',isBrt:false,company:'DSV SpA',dest:'3.2 — Bay 1',cargo:'Componentistica',eta:'08:45',etaMins:37,speed:'45 km/h',status:'arriving',lat:42,lng:60},
-  {id:'OT-003',plate:'CH117ZR',type:'truck',isBrt:false,company:'Ceva Logistics',dest:'4.3 — Bay 2',cargo:'Merci generali',eta:'09:20',etaMins:72,speed:'58 km/h',status:'enroute',lat:78,lng:48},
-  {id:'OT-004',plate:'MO882WS',type:'truck',isBrt:false,company:'Trans Cargo',dest:'2.2 — Bay C',cargo:'Materiali edili',eta:'08:30',etaMins:22,speed:'71 km/h',status:'arriving',lat:38,lng:82},
-  {id:'OT-005',plate:'RM501QB',type:'van',isBrt:false,company:'InPost',dest:'3.3 — Bay B',cargo:'E-commerce pkg',eta:'08:55',etaMins:47,speed:'48 km/h',status:'enroute',lat:65,lng:65},
-  {id:'OT-008',plate:'BO345KL',type:'truck',isBrt:false,company:'Geodis Logistics',dest:'CD2 — Bay 1',cargo:'Farmaceutici',eta:'08:20',etaMins:12,speed:'29 km/h',status:'arriving',lat:52,lng:38},
-  {id:'TR-001',plate:'IT-MRCI-4421',type:'train',isBrt:false,company:'Mercitalia Intermodal',dest:'Terminal RFI — Binario 2',cargo:'24 container 40ft',eta:'09:15',etaMins:67,speed:'110 km/h',status:'enroute',lat:88,lng:55},
+  {id:'BRT-001',plate:'AB724EF', type:'truck',isBrt:true, company:'BRT Corriere Espresso',dest:'CD1 — Bay 3',      cargo:'Pacchi Express (1.4t)',   eta:'08:12',etaMins:4,  speed:'38 km/h',status:'arriving'},
+  {id:'BRT-002',plate:'AB388QR', type:'truck',isBrt:true, company:'BRT Corriere Espresso',dest:'1.2 — Bay 1',      cargo:'Smistamento (0.8t)',      eta:'08:34',etaMins:26, speed:'67 km/h',status:'enroute'},
+  {id:'BRT-003',plate:'BO217KX', type:'truck',isBrt:true, company:'BRT Corriere Espresso',dest:'4.4 — Bay A',      cargo:'Merce Varia (2.1t)',      eta:'09:05',etaMins:57, speed:'72 km/h',status:'enroute'},
+  {id:'BRT-004',plate:'BO991LZ', type:'truck',isBrt:true, company:'BRT Corriere Espresso',dest:'1.2 — Bay 2',      cargo:'Giacenze (0.6t)',         eta:'10:15',etaMins:127,speed:'81 km/h',status:'scheduled'},
+  {id:'BRT-005',plate:'MO114WP', type:'van',  isBrt:true, company:'BRT Corriere Espresso',dest:'1.2 — Bay 4',      cargo:'Espresso Urgente (0.2t)', eta:'08:48',etaMins:40, speed:'54 km/h',status:'enroute'},
+  {id:'OT-001', plate:'FE219XK', type:'truck',isBrt:false,company:'DSV SpA',               dest:'3.2 — Bay 1',      cargo:'Componentistica',         eta:'08:45',etaMins:37, speed:'45 km/h',status:'arriving'},
+  {id:'OT-003', plate:'CH117ZR', type:'truck',isBrt:false,company:'Ceva Logistics',         dest:'4.3 — Bay 2',      cargo:'Merci generali',          eta:'09:20',etaMins:72, speed:'58 km/h',status:'enroute'},
+  {id:'OT-004', plate:'MO882WS', type:'truck',isBrt:false,company:'Trans Cargo',            dest:'2.2 — Bay C',      cargo:'Materiali edili',         eta:'08:30',etaMins:22, speed:'71 km/h',status:'arriving'},
+  {id:'OT-005', plate:'RM501QB', type:'van',  isBrt:false,company:'InPost',                 dest:'3.3 — Bay B',      cargo:'E-commerce pkg',          eta:'08:55',etaMins:47, speed:'48 km/h',status:'enroute'},
+  {id:'OT-008', plate:'BO345KL', type:'truck',isBrt:false,company:'Geodis Logistics',       dest:'CD2 — Bay 1',      cargo:'Farmaceutici',            eta:'08:20',etaMins:12, speed:'29 km/h',status:'arriving'},
+  // Treno: isBrt:false → Tenant BRT vedrà "Transito Ferroviario Standard"
+  // Admin vedrà: Mercitalia Intermodal → Terminal RFI — Binario 2
+  {id:'TR-001', plate:'IT-MRCI-4421',type:'train',isBrt:false,company:'Mercitalia Intermodal',dest:'Terminal RFI — Binario 2',cargo:'24 container 40ft',eta:'09:15',etaMins:67,speed:'110 km/h',status:'enroute'},
 ];
 
 // ─── STATE ───
@@ -710,21 +738,20 @@ function goPage(p,btn){
   document.querySelectorAll('.page').forEach(x => { x.classList.remove('on'); });
   document.querySelectorAll('.nb').forEach(x => x.classList.remove('on'));
   document.querySelectorAll('.mnb').forEach(x => x.classList.remove('on'));
-  
   const targetPage = document.getElementById('page-'+p);
   if(targetPage) targetPage.classList.add('on');
-  
   if(btn) btn.classList.add('on');
-  
   const mobileBtn = document.querySelector(`.mnb[data-page="${p}"]`);
   if(mobileBtn) mobileBtn.classList.add('on');
-  
   if(p==='mission') {
     setTimeout(()=> { initChart('chart1'); initChart('chart2'); initChart('chart3'); initChart('chart4'); }, 100);
   }
-  if(p==='logistica') renderTransitLog();
+  if(p==='logistica') {
+    renderSlotGrid();
+    renderWaitingTable();
+    renderTransitLog();
+  }
   if(p==='map') renderMapMarkers();
-  
   window.scrollTo(0,0);
 }
 
@@ -733,7 +760,14 @@ function goPageMob(p, btn) {
 }
 
 // ═══════════════════════════════════════════════════
-//  ROLE SWITCH 
+//  HELPER: cella dati protetti (blur + lucchetto)
+// ═══════════════════════════════════════════════════
+function protectedCell(originalText){
+  return `<span class="protected-data"><span class="lock-icon">🔒</span><span class="protected-text">${originalText}</span></span>`;
+}
+
+// ═══════════════════════════════════════════════════
+//  ROLE SWITCH
 // ═══════════════════════════════════════════════════
 function switchRole(val){
   role = val;
@@ -763,13 +797,18 @@ function switchRole(val){
 function applyRoleToUI(){
   const isAdmin = role === 'admin';
 
+  // KPI
   document.getElementById('kpi-a').style.display = isAdmin ? 'grid' : 'none';
   document.getElementById('kpi-n').style.display = isAdmin ? 'none' : 'grid';
 
+  // Banner transiti
   document.getElementById('transit-banner-admin').style.display = isAdmin ? 'flex' : 'none';
   document.getElementById('transit-banner-brt').style.display = isAdmin ? 'none' : 'flex';
-  document.getElementById('hash-toggle-wrap').style.display = isAdmin ? 'flex' : 'none';
 
+  // Badge crittografia: sempre visibile, non è più un toggle
+  document.getElementById('hash-toggle-wrap').style.display = 'flex';
+
+  // Zone mappa
   document.querySelectorAll('.zone-g').forEach(g=>{
     const z = g.dataset.zone;
     const a = g.querySelector('.za, .zone-a');
@@ -782,22 +821,132 @@ function applyRoleToUI(){
     }
   });
 
+  // Ri-render tutte le sezioni logistica
+  renderSlotGrid();
+  renderWaitingTable();
   renderTransitLog();
   renderMapMarkers();
 }
 
 // ═══════════════════════════════════════════════════
-//  TRANSIT LOG RENDERER 
+//  SLOT GRID RENDERER
+//  ADMIN: tutte le targhe SEMPRE hashate (Privacy by Design)
+//  BRT:   slot propri → visibili; altrui → [DATI PROTETTI - PRIVACY]
+// ═══════════════════════════════════════════════════
+function renderSlotGrid(){
+  const container = document.getElementById('slotGrid');
+  if(!container) return;
+  const isAdmin = role === 'admin';
+
+  let html = '';
+  SLOT_DATA.forEach(s => {
+    if(s.status === 'free'){
+      html += `<div class="slot free">
+        <div style="font-size:11px">${s.time}</div>
+        <div style="font-weight:700">—</div>
+        <div style="font-size:10px">LIBERO</div>
+      </div>`;
+      return;
+    }
+
+    if(isAdmin){
+      // Admin: targa SEMPRE hashata, azienda visibile
+      const plateHash = hashPlate(s.plate);
+      html += `<div class="slot ${s.status}">
+        <div style="font-size:11px">${s.time}</div>
+        <div style="font-weight:700;font-size:11px;color:var(--grn);letter-spacing:.02em">${plateHash}</div>
+        <div style="font-size:10px">${s.company}</div>
+      </div>`;
+    } else if(s.isBrt){
+      // BRT: slot propri → targa in chiaro
+      html += `<div class="slot ${s.status}">
+        <div style="font-size:11px">${s.time}</div>
+        <div style="font-weight:700;font-size:11px">${s.plate}</div>
+        <div style="font-size:10px">${s.company}</div>
+      </div>`;
+    } else {
+      // BRT: slot altrui → dati censurati con blur + lucchetto
+      html += `<div class="slot ${s.status} slot-protected" style="cursor:not-allowed;opacity:.6;">
+        <div style="font-size:11px">${s.time}</div>
+        <div style="font-weight:700;font-size:11px;filter:blur(5px);user-select:none;">🔒</div>
+        <div style="font-size:10px;color:rgba(180,180,180,.5)">[PRIVACY]</div>
+      </div>`;
+    }
+  });
+  container.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════
+//  WAITING TABLE RENDERER
+//  ADMIN: targa SEMPRE hashata, resto visibile
+//  BRT:   mezzi propri → visibili; altrui → dati censurati
+// ═══════════════════════════════════════════════════
+function renderWaitingTable(){
+  const tbody = document.getElementById('waitingBody');
+  if(!tbody) return;
+  const isAdmin = role === 'admin';
+
+  let rows = '';
+  WAITING_DATA.forEach(v => {
+    const waitColor = v.waitLevel === 'red' ? 'var(--red)' : 'var(--y)';
+    const pillClass = v.waitLevel === 'red' ? 'pill-r' : 'pill-y';
+
+    if(isAdmin){
+      // Admin: targa hashata, tutto il resto visibile
+      rows += `<tr>
+        <td><span class="tplate plate-hash">${hashPlate(v.plate)}</span></td>
+        <td>${v.company}</td>
+        <td>${v.dest}</td>
+        <td style="color:${waitColor}; font-weight:bold;">${v.wait}</td>
+        <td><span class="pill ${pillClass}">${v.status}</span></td>
+      </tr>`;
+    } else if(v.isBrt){
+      // BRT: mezzi propri visibili in chiaro
+      rows += `<tr>
+        <td>${v.plate}</td>
+        <td>${v.company}</td>
+        <td>${v.dest}</td>
+        <td style="color:${waitColor}; font-weight:bold;">${v.wait}</td>
+        <td><span class="pill ${pillClass}">${v.status}</span></td>
+      </tr>`;
+    } else {
+      // BRT: riga presente ma dati censurati con blur
+      rows += `<tr class="row-protected">
+        <td>${protectedCell(v.plate)}</td>
+        <td>${protectedCell(v.company)}</td>
+        <td>${protectedCell(v.dest)}</td>
+        <td><span class="prot-val" style="filter:blur(5px);user-select:none;color:rgba(180,180,180,.5)">-- min</span></td>
+        <td><span class="pill" style="background:rgba(80,80,80,.2);color:rgba(150,150,150,.5);border:1px solid rgba(100,100,100,.3)">🔒 OSCURATO</span></td>
+      </tr>`;
+    }
+  });
+  tbody.innerHTML = rows;
+}
+
+// ═══════════════════════════════════════════════════
+//  TRANSIT LOG RENDERER
+//
+//  MASTER ADMIN:
+//    - Tutti i veicoli visibili
+//    - Targhe SEMPRE hashate: AB123CD → e3b0c442...
+//      (Privacy by Design: il dato sensibile è crittografato
+//       anche in caso di breach del sistema)
+//    - Treni: "Treno {vettore} — Diretto a {terminal}"
+//      es. "Treno Mercitalia — Diretto a Terminal RFI"
+//
+//  TENANT BRT:
+//    - Mezzi BRT: targa in chiaro + ETA + carico visibili
+//    - Mezzi altrui: targa e azienda → blur + 🔒
+//    - Treni non BRT: "Transito Ferroviario Standard"
 // ═══════════════════════════════════════════════════
 function renderTransitLog(){
   const isAdmin = role === 'admin';
-  const showHash = isAdmin && document.getElementById('hashToggle') && document.getElementById('hashToggle').checked;
   const tbody = document.getElementById('transitBody');
 
   const typeIcon = {truck:'🚛', van:'🚐', train:'🚂'};
   const statusMap = {
-    arriving: '<span class="pill pill-r">ARRIVO</span>',
-    enroute: '<span class="pill pill-y">IN VIAGGIO</span>',
+    arriving:  '<span class="pill pill-r">ARRIVO</span>',
+    enroute:   '<span class="pill pill-y">IN VIAGGIO</span>',
     scheduled: '<span class="pill pill-b">PROGRAM.</span>',
   };
 
@@ -805,54 +954,89 @@ function renderTransitLog(){
   TRANSIT_DATA.forEach(v=>{
     const isOwn = v.isBrt;
     const isTrain = v.type === 'train';
-    const showData = isAdmin || isOwn;
 
-    let rowClass = isOwn ? 'row-nexus' : (isTrain ? 'row-train' : 'row-other');
-    if(!showData) rowClass += ' row-locked';
+    // ── ADMIN ────────────────────────────────────────
+    if(isAdmin){
+      // Targa SEMPRE hashata per tutti i veicoli
+      const plateDisplay = `<span class="tplate plate-hash" title="Privacy by Design — hash irreversibile">${hashPlate(v.plate)}</span>`;
 
-    let plateCell = showData 
-      ? (showHash && !isOwn ? `<span class="tplate plate-hash">${hashPlate(v.plate)}</span>` : `<span class="tplate plate-clear" style="color:${isOwn?'var(--y)':'var(--tx)'}">${v.plate}</span>`)
-      : `<span class="priv-cell blur-on"><span class="priv-icon">🔒</span>${v.plate}</span>`;
+      // Treni: "Treno {vettore} — Diretto a {terminal}"
+      let destDisplay;
+      if(isTrain){
+        destDisplay = `<span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--blu)">
+          🚂 Treno ${v.company} — Diretto a ${v.dest}
+        </span>`;
+      } else {
+        destDisplay = `<span style="font-family:'JetBrains Mono',monospace;font-size:13px">${v.dest}</span>`;
+      }
 
-    let companyCell = showData 
-      ? `<span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700${isOwn?';color:var(--y)':''}">${v.company}</span>`
-      : `<span class="priv-cell blur-on"><span class="priv-icon">🔒</span>${v.company}</span>`;
+      const etaDisplay = `<span class="eta-cell">${v.eta}</span>`;
 
-    let destCell = '';
-    if(showData){
-      destCell = (!isAdmin && isTrain && !isOwn) 
-        ? `<span style="color:var(--txd);font-size:13px;font-family:'JetBrains Mono',monospace">Transito Ferroviario</span>` 
-        : `<span style="font-family:'JetBrains Mono',monospace;font-size:13px">${v.dest}</span>`;
+      const privBadge = `<span class="pill" style="background:rgba(0,230,118,.1);color:var(--grn);border:1px solid rgba(0,230,118,.3)">🔐 HASH</span>`;
+
+      let rowClass = isTrain ? 'row-train' : '';
+
+      rows += `<tr class="${rowClass}">
+        <td style="text-align:center;font-size:16px">${typeIcon[v.type]||'🚛'}</td>
+        <td>${plateDisplay}</td>
+        <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:var(--txd)">${v.type}</span></td>
+        <td><span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700">${v.company}</span></td>
+        <td>${destDisplay}</td>
+        <td><span style="font-size:13px;color:var(--txd)">${v.cargo}</span></td>
+        <td>${etaDisplay}</td>
+        <td><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--txd)">${v.speed}</span></td>
+        <td>${statusMap[v.status]||''}</td>
+        <td>${privBadge}</td>
+      </tr>`;
+
+    // ── TENANT BRT ───────────────────────────────────
     } else {
-      destCell = `<span class="priv-cell blur-on"><span class="priv-icon">🔒</span>${v.dest}</span>`;
+      if(isOwn){
+        // Mezzi BRT: targa in chiaro, ETA con minuti, carico visibile
+        rows += `<tr class="row-nexus">
+          <td style="text-align:center;font-size:16px">${typeIcon[v.type]||'🚛'}</td>
+          <td><span class="tplate plate-clear" style="color:var(--y)">${v.plate}</span></td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:var(--txd)">${v.type}</span></td>
+          <td><span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--y)">${v.company}</span></td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:13px">${v.dest}</span></td>
+          <td><span style="font-size:13px;color:var(--txm)">${v.cargo}</span></td>
+          <td><span class="eta-cell eta-nexus">${v.eta} (+${v.etaMins}m)</span></td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--txd)">${v.speed}</span></td>
+          <td>${statusMap[v.status]||''}</td>
+          <td><span class="pill pill-g">🔓 AUTORIZZATO</span></td>
+        </tr>`;
+
+      } else if(isTrain){
+        // Treni non BRT: solo "Transito Ferroviario Standard", composizione e cliente nascosti
+        rows += `<tr class="row-train row-locked">
+          <td style="text-align:center;font-size:16px">🚂</td>
+          <td>${protectedCell(v.plate)}</td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:var(--txd)">train</span></td>
+          <td>${protectedCell(v.company)}</td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--txd)">Transito Ferroviario Standard</span></td>
+          <td><span style="font-size:13px;color:var(--txd)">—</span></td>
+          <td><span class="eta-cell" style="color:var(--txd)">—</span></td>
+          <td><span style="color:transparent;filter:blur(5px);user-select:none">000 km/h</span></td>
+          <td>${statusMap[v.status]||''}</td>
+          <td><span class="pill pill-r">🔒 OSCURATO</span></td>
+        </tr>`;
+
+      } else {
+        // Camion/furgoni diretti ad altre aziende: tutto censurato con blur + 🔒
+        rows += `<tr class="row-other row-locked">
+          <td style="text-align:center;font-size:16px">${typeIcon[v.type]||'🚛'}</td>
+          <td>${protectedCell(v.plate)}</td>
+          <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:var(--txd)">${v.type}</span></td>
+          <td>${protectedCell(v.company)}</td>
+          <td>${protectedCell(v.dest)}</td>
+          <td>${protectedCell(v.cargo)}</td>
+          <td><span class="eta-cell eta-hidden">00:00</span></td>
+          <td><span style="color:transparent;filter:blur(5px);user-select:none">00 km/h</span></td>
+          <td>${statusMap[v.status]||''}</td>
+          <td><span class="pill pill-r">🔒 OSCURATO</span></td>
+        </tr>`;
+      }
     }
-
-    let cargoCell = showData 
-      ? (!isAdmin && isTrain && !isOwn ? `<span style="color:var(--txd);font-size:13px">—</span>` : `<span style="font-size:13px;color:${isOwn?'var(--txm)':'var(--txd)'}">${v.cargo}</span>`)
-      : `<span class="priv-cell blur-on"><span class="priv-icon">🔒</span>${v.cargo}</span>`;
-
-    let etaCell = showData 
-      ? (isOwn ? `<span class="eta-cell eta-nexus">${v.eta} (+${v.etaMins}m)</span>` : (!isAdmin && isTrain && !isOwn ? `<span class="eta-cell" style="color:var(--txd)">—</span>` : `<span class="eta-cell">${v.eta}</span>`))
-      : `<span class="eta-cell eta-hidden">00:00</span>`;
-
-    let speedCell = showData ? `<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--txd)">${v.speed}</span>` : `<span style="color:transparent;filter:blur(5px);user-select:none">00 km/h</span>`;
-
-    let privBadge = isOwn 
-      ? `<span class="pill pill-g">🔓 AUTORIZZATO</span>` 
-      : (isAdmin ? `<span class="pill" style="background:rgba(0,180,216,.1);color:var(--blu);border:1px solid rgba(0,180,216,.3)">📋 VISIBILE</span>` : `<span class="pill pill-r">🔒 OSCURATO</span>`);
-
-    rows += `<tr class="${rowClass}">
-      <td style="text-align:center; font-size:16px;">${typeIcon[v.type]||'🚛'}</td>
-      <td>${plateCell}</td>
-      <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;color:var(--txd)">${v.type}</span></td>
-      <td>${companyCell}</td>
-      <td>${destCell}</td>
-      <td>${cargoCell}</td>
-      <td>${etaCell}</td>
-      <td>${speedCell}</td>
-      <td>${statusMap[v.status]||''}</td>
-      <td>${privBadge}</td>
-    </tr>`;
   });
 
   if(tbody) tbody.innerHTML = rows;
@@ -864,11 +1048,11 @@ function hashPlate(p){
 }
 
 // ═══════════════════════════════════════════════════
-//  MAP MARKERS - I puntini animati non vengono più aggiunti al DOM
+//  MAP MARKERS
 // ═══════════════════════════════════════════════════
 function renderMapMarkers(){
   const layer = document.getElementById('mkLayer');
-  if(layer) layer.innerHTML=''; // Mantiene il layer completamente pulito e senza marker
+  if(layer) layer.innerHTML='';
 }
 
 // ═══════════════════════════════════════════════════
@@ -878,7 +1062,6 @@ document.querySelectorAll('.zone-g').forEach(g=>{
   g.addEventListener('click',()=>{
     const z = g.dataset.zone;
     showZonePanel(z);
-    
     document.querySelectorAll('.za,.zone-a').forEach(a=>a.style.filter='');
     if(role === 'admin' || BRT_ZONES.includes(z)) {
       g.querySelector('.za,.zone-a').style.filter='brightness(1.5)';
@@ -889,7 +1072,6 @@ document.querySelectorAll('.zone-g').forEach(g=>{
 function showZonePanel(zone){
   const bodyEl = document.getElementById('mspBody');
   const subEl = document.getElementById('mspSub');
-  
   if(!bodyEl) return;
   subEl.textContent=`Zona: ${zone}`;
 
@@ -1045,7 +1227,7 @@ function initChart(id){
 }
 
 // ═══════════════════════════════════════════════════
-//  MOBILE MAP PANEL FUNCTIONS
+//  MOBILE MAP PANEL
 // ═══════════════════════════════════════════════════
 function openMobMapPanel(zone) {
   const body = document.getElementById('mspBody').innerHTML;
@@ -1068,7 +1250,13 @@ if(mobPanel){
 }
 
 window.addEventListener('load',()=>{
-  setTimeout(()=> { initChart('chart1'); initChart('chart2'); initChart('chart3'); initChart('chart4'); }, 150);
+  setTimeout(()=> {
+    initChart('chart1'); initChart('chart2'); initChart('chart3'); initChart('chart4');
+    // Render iniziale della sezione logistica (con ruolo default: admin)
+    renderSlotGrid();
+    renderWaitingTable();
+    renderTransitLog();
+  }, 150);
 });
 </script>
 </body>
