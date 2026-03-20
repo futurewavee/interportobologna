@@ -1212,10 +1212,10 @@ function initChart(id){
   }
   else if(id==='chart4'){
     chartInstances[id]=new Chart(ctx,{type:'doughnut',data:{
-      labels:['Standard / Dry', 'Temp-Controlled', 'Perishable', 'Hazardous (ADR)'],
+      labels:['Temperatura Controllata', 'Merce Fresca', 'Fresco Deperibile', 'Farma'],
       datasets:[{
-        data:[45, 25, 20, 10],
-        backgroundColor:['#00B4D8', '#9B59B6', '#00E676', '#FF4444'],
+        data:[35, 25, 22, 18],
+        backgroundColor:['#00B4D8', '#00E676', '#FF9900', '#9B59B6'],
         borderWidth:0,
         hoverOffset: 4
       }]
