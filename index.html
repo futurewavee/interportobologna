@@ -71,6 +71,10 @@ nav{display:flex;gap:4px}
 .pt{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--y)}
 .pb{padding:16px;flex:1;overflow-y:auto; position:relative;}
 
+/* FIX: Contenitore specifico per i grafici senza barra di scorrimento */
+.pb-chart { padding:12px; overflow:hidden; display:flex; flex-direction:column; min-height:0; }
+.chart-wrap { width:100%; flex:1; min-height:0; position:relative; display:flex; align-items:center; justify-content:center; }
+
 /* ── ROLE TRANSITION OVERLAY ── */
 .role-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,0);
@@ -122,7 +126,7 @@ tr.row-train td{background:rgba(0,180,216,.05)}
 .eta-nexus{color:var(--grn);font-weight:700}
 .eta-hidden{color:transparent;filter:blur(5px);user-select:none}
 
-/* MAP MARKER DOTS (Maintained CSS in case needed later, but dots removed) */
+/* MAP MARKER DOTS */
 .mk{position:absolute;width:12px;height:12px;border-radius:50%;cursor:pointer;transform:translate(-50%,-50%);transition:all .4s;z-index:8}
 .mk.nexus{background:var(--y);box-shadow:0 0 0 3px rgba(255,204,0,.4)}
 .mk.other-admin{background:var(--y);box-shadow:0 0 0 3px rgba(255,204,0,.3)}
@@ -177,9 +181,6 @@ tr.row-train td{background:rgba(0,180,216,.05)}
 /* ── TOAST ── */
 .toast{position:fixed;bottom:80px;right:24px;background:var(--grn);color:#000;padding:12px 20px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.05em;z-index:99999;transform:translateY(60px);opacity:0;transition:all .3s}
 .toast.show{transform:translateY(0);opacity:1}
-
-/* Charts */
-.chart-wrap{width:100%;height:100%;min-height:220px;position:relative}
 
 /* GRID ROWS */
 .gr{display:grid;gap:16px;flex:1;min-height:0}
@@ -253,7 +254,10 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
   /* Adatta griglia grafici al mobile (1 colonna) */
   .gr.c5050{grid-template-columns:1fr!important}
   
-  .chart-wrap{height:220px!important;min-height:220px}
+  /* Altezza fissa su mobile per scroll naturale della pagina */
+  .chart-wrap{height:250px!important;min-height:250px;flex:none;}
+  .pb-chart{display:block; overflow:visible;}
+
   .slot-grid{grid-template-columns:repeat(3,1fr)}
 
   .tlog-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -333,8 +337,8 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
   <div class="panel" style="border-left: 4px solid var(--blu);">
     <div class="ph"><div class="pt">📊 CONTESTO STRATEGICO (EXECUTIVE SUMMARY)</div></div>
     <div class="pb" style="font-size: 15px; line-height: 1.6; color: var(--txm);">
-      <strong style="color: var(--y); font-size:16px;">Il Problema:</strong> Oltre 130 tenant operano in modo frammentato. Gestione reattiva dei flussi causa congestione ai varchi e sprechi energetici.<br><br>
-      <strong style="color: var(--grn); font-size:16px;">La Soluzione:</strong> Collaborative Demand Intelligence. Modelli ML e NLP aggregano i dati per prevedere e orchestrare i flussi a 24-72h.
+      <strong style="color: var(--y); font-size:16px;">Problema:</strong> Oltre 130 tenant operano in modo frammentato. Gestione reattiva dei flussi causa congestione ai varchi e sprechi energetici.<br><br>
+      <strong style="color: var(--grn); font-size:16px;">Soluzione:</strong> Collaborative Demand Intelligence. Modelli ML e NLP aggregano i dati per prevedere e orchestrare i flussi a 24-72h.
     </div>
   </div>
 
@@ -354,25 +358,27 @@ button, select, a, input, label, .nb, .mnb, .btn-eng, .mbtn, .role-sel, .zone-g,
   <div class="mc-grid">
     <div class="mc-left">
       <div class="gr c5050" style="min-height: 0; flex:1;">
+        
         <div class="panel">
           <div class="ph"><div class="pt">⚡ Previsione Traffico a 72h</div><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--txd)">MODELLO LSTM</span></div>
-          <div class="pb"><div class="chart-wrap"><canvas id="chart1"></canvas></div></div>
+          <div class="pb pb-chart"><div class="chart-wrap"><canvas id="chart1"></canvas></div></div>
         </div>
         
         <div class="panel">
           <div class="ph"><div class="pt">⏱️ Tempo Attesa Varchi (Minuti)</div><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--grn)">▼ -25% AI</span></div>
-          <div class="pb"><div class="chart-wrap"><canvas id="chart2"></canvas></div></div>
+          <div class="pb pb-chart"><div class="chart-wrap"><canvas id="chart2"></canvas></div></div>
         </div>
         
         <div class="panel">
           <div class="ph"><div class="pt">📉 Trend Risparmio CO₂ (12 Mesi)</div></div>
-          <div class="pb"><div class="chart-wrap"><canvas id="chart3"></canvas></div></div>
+          <div class="pb pb-chart"><div class="chart-wrap"><canvas id="chart3"></canvas></div></div>
         </div>
         
         <div class="panel">
           <div class="ph"><div class="pt">📦 Flussi per Classe Logistica</div><span style="font-family:JetBrains Mono,monospace;font-size:11px;color:var(--y)">PRIVACY BY DESIGN</span></div>
-          <div class="pb"><div class="chart-wrap"><canvas id="chart4"></canvas></div></div>
+          <div class="pb pb-chart"><div class="chart-wrap"><canvas id="chart4"></canvas></div></div>
         </div>
+
       </div>
     </div>
     
@@ -858,11 +864,11 @@ function hashPlate(p){
 }
 
 // ═══════════════════════════════════════════════════
-//  MAP MARKERS (REMOVED AS REQUESTED)
+//  MAP MARKERS - I puntini animati non vengono più aggiunti al DOM
 // ═══════════════════════════════════════════════════
 function renderMapMarkers(){
   const layer = document.getElementById('mkLayer');
-  if(layer) layer.innerHTML=''; // Mantiene il layer pulito senza visualizzare puntini
+  if(layer) layer.innerHTML=''; // Mantiene il layer completamente pulito e senza marker
 }
 
 // ═══════════════════════════════════════════════════
